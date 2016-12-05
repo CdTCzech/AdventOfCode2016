@@ -136,30 +136,30 @@ namespace day2
 
 		for (const auto& line : getLineByLine("day2.txt"))
 		{
-			for (const auto& direction : line)
-			{
-				if (direction == 'U' && position != 1 && position != 2 && position != 4 && position != 5 && position != 9)
-				{
-					if (position == 3 || position == 13) position -= 2;
-					else position -= 4;
-				}
-				if (direction == 'D' && position != 5 && position != 9 && position != 10 && position != 12 && position != 13)
-				{
-					if (position == 1 || position == 11) position += 2;
-					else position += 4;
-				}
-				if (direction == 'L' && position != 1 && position != 2 && position != 5 && position != 10 && position != 13) position -= 1;
-				if (direction == 'R' && position != 1 && position != 4 && position != 9 && position != 12 && position != 13) position += 1;
-			}
+for (const auto& direction : line)
+{
+	if (direction == 'U' && position != 1 && position != 2 && position != 4 && position != 5 && position != 9)
+	{
+		if (position == 3 || position == 13) position -= 2;
+		else position -= 4;
+	}
+	if (direction == 'D' && position != 5 && position != 9 && position != 10 && position != 12 && position != 13)
+	{
+		if (position == 1 || position == 11) position += 2;
+		else position += 4;
+	}
+	if (direction == 'L' && position != 1 && position != 2 && position != 5 && position != 10 && position != 13) position -= 1;
+	if (direction == 'R' && position != 1 && position != 4 && position != 9 && position != 12 && position != 13) position += 1;
+}
 
-			if (position > 9)
-			{
-				result += ('A' - 10) + position;
-			}
-			else
-			{
-				result += '0' + position;
-			}
+if (position > 9)
+{
+	result += ('A' - 10) + position;
+}
+else
+{
+	result += '0' + position;
+}
 		}
 		std::cout << result << std::endl;
 	}
@@ -213,6 +213,86 @@ namespace day3
 	}
 }
 
+namespace day4
+{
+	void part1(bool doPart2 = false)
+	{
+		int64 result = 0;
+
+		for (const auto& line : getLineByLine("day4.txt"))
+		{
+			std::map<char, int> charCount;
+
+			std::vector<std::string> tokens;
+			std::size_t start = 0, end = 0;
+			while ((end = line.find('-', start)) != std::string::npos) {
+				if (end != start) {
+					tokens.push_back({ line.substr(start, end - start) });
+				}
+				start = end + 1;
+			}
+			if (end != start) {
+				tokens.push_back({ line.substr(start) });
+			}
+
+			for (size_t i = 0; i < tokens.size() - 1; ++i)
+			{
+				for (size_t j = 0; j < tokens[i].size(); ++j)
+				{
+					auto index = charCount.find(tokens[i][j]);
+					if (index != charCount.end()) ++charCount[tokens[i][j]];
+					else charCount.insert({ tokens[i][j], 1 });
+				}
+			}
+
+			std::string fiveMostCommon;
+			std::vector<std::pair<char, int>> charCountSorted(charCount.begin(), charCount.end());
+			std::stable_sort(charCountSorted.begin(), charCountSorted.end(), [=](const std::pair<char, int>& a, const std::pair<char, int>& b) { return a.second > b.second; });
+
+			for (size_t i = 0; i < 5; ++i)
+			{
+				fiveMostCommon += charCountSorted[i].first;
+			}
+
+			if (fiveMostCommon == tokens.back().substr(tokens.back().size() - 6, 5))
+			{
+				std::istringstream iss(tokens.back().substr(0, tokens.back().size() - 7));
+				int number;
+				iss >> number;
+
+				if (doPart2)
+				{
+					for (size_t i = 0; i < tokens.size() - 1; ++i)
+					{
+						std::string word;
+						for (size_t j = 0; j < tokens[i].size(); ++j)
+						{
+							word += (((tokens[i][j] - 'a') + number) % 26) + 'a';
+						}
+
+						if (word == "northpole")
+						{
+							std::cout << number << std::endl;
+							return;
+						}
+					}
+				}
+				else
+				{
+					result += number;
+				}
+			}
+		}
+
+		std::cout << result << std::endl;
+	}
+
+	void part2()
+	{
+		part1(true);
+	}
+}
+
 int main(int argc, char** argv)
 {
 	std::cout << "Day 1 Part 1 (expected 246): ";			day1::part1();
@@ -221,6 +301,8 @@ int main(int argc, char** argv)
 	std::cout << "Day 2 Part 2 (expected 46C91): ";			day2::part2();
 	std::cout << "Day 3 Part 1 (expected 993): ";			day3::part1();
 	std::cout << "Day 3 Part 2 (expected 1849): ";			day3::part2();
+	std::cout << "Day 4 Part 1 (expected 409147): ";		day4::part1();
+	std::cout << "Day 4 Part 2 (expected 991): ";			day4::part2();
 
 	system("pause");
 	return 0;
