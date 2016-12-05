@@ -38,9 +38,9 @@ namespace day1
 				numberString += token[i];
 			}
 
-			std::istringstream iss(numberString);
+			std::istringstream numberStream(numberString);
 			int64 number;
-			iss >> number;
+			numberStream >> number;
 
 			auto turnRight = (token[0] == 'R');
 
@@ -165,12 +165,62 @@ namespace day2
 	}
 }
 
+namespace day3
+{
+	void part1()
+	{
+		uint64 result = 0;
+
+		for (const auto& line : getLineByLine("day3.txt"))
+		{
+			std::istringstream iss(line);
+			int64 x, y, z;
+			iss >> x >> y >> z;
+
+			if (x + y > z && x + z > y && y + z > x) ++result;
+		}
+
+		std::cout << result << std::endl;
+	}
+
+	void part2()
+	{
+		uint64 result = 0;
+		int64 x1, x2, x3;
+		int64 y1, y2, y3;
+		int64 z1, z2, z3;
+
+		int lineIndex = 1;
+		for (const auto& line : getLineByLine("day3.txt"))
+		{
+			std::istringstream iss(line);
+			if (lineIndex == 1) iss >> x1 >> x2 >> x3;
+			if (lineIndex == 2) iss >> y1 >> y2 >> y3;
+			if (lineIndex == 3) iss >> z1 >> z2 >> z3;
+
+			if (lineIndex == 3)
+			{
+				if (x1 + y1 > z1 && x1 + z1 > y1 && y1 + z1 > x1) ++result;
+				if (x2 + y2 > z2 && x2 + z2 > y2 && y2 + z2 > x2) ++result;
+				if (x3 + y3 > z3 && x3 + z3 > y3 && y3 + z3 > x3) ++result;
+				lineIndex = 0;
+			}
+
+			++lineIndex;
+		}
+
+		std::cout << result << std::endl;
+	}
+}
+
 int main(int argc, char** argv)
 {
 	std::cout << "Day 1 Part 1 (expected 246): ";			day1::part1();
 	std::cout << "Day 1 Part 2 (expected 124): ";			day1::part2();
 	std::cout << "Day 2 Part 1 (expected 24862): ";			day2::part1();
-	std::cout << "Day 2 Part 1 (expected 46C91): ";			day2::part2();
+	std::cout << "Day 2 Part 2 (expected 46C91): ";			day2::part2();
+	std::cout << "Day 3 Part 1 (expected 993): ";			day3::part1();
+	std::cout << "Day 3 Part 2 (expected 1849): ";			day3::part2();
 
 	system("pause");
 	return 0;
