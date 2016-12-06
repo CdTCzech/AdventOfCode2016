@@ -9,6 +9,7 @@
 #include <sstream>
 #include <vector>
 
+#include "Libraries\md5.h"
 #include "FileReader.h"
 
 typedef __int64 int64;
@@ -136,30 +137,30 @@ namespace day2
 
 		for (const auto& line : getLineByLine("day2.txt"))
 		{
-for (const auto& direction : line)
-{
-	if (direction == 'U' && position != 1 && position != 2 && position != 4 && position != 5 && position != 9)
-	{
-		if (position == 3 || position == 13) position -= 2;
-		else position -= 4;
-	}
-	if (direction == 'D' && position != 5 && position != 9 && position != 10 && position != 12 && position != 13)
-	{
-		if (position == 1 || position == 11) position += 2;
-		else position += 4;
-	}
-	if (direction == 'L' && position != 1 && position != 2 && position != 5 && position != 10 && position != 13) position -= 1;
-	if (direction == 'R' && position != 1 && position != 4 && position != 9 && position != 12 && position != 13) position += 1;
-}
+			for (const auto& direction : line)
+			{
+				if (direction == 'U' && position != 1 && position != 2 && position != 4 && position != 5 && position != 9)
+				{
+					if (position == 3 || position == 13) position -= 2;
+					else position -= 4;
+				}
+				if (direction == 'D' && position != 5 && position != 9 && position != 10 && position != 12 && position != 13)
+				{
+					if (position == 1 || position == 11) position += 2;
+					else position += 4;
+				}
+				if (direction == 'L' && position != 1 && position != 2 && position != 5 && position != 10 && position != 13) position -= 1;
+				if (direction == 'R' && position != 1 && position != 4 && position != 9 && position != 12 && position != 13) position += 1;
+			}
 
-if (position > 9)
-{
-	result += ('A' - 10) + position;
-}
-else
-{
-	result += '0' + position;
-}
+			if (position > 9)
+			{
+				result += ('A' - 10) + position;
+			}
+			else
+			{
+				result += '0' + position;
+			}
 		}
 		std::cout << result << std::endl;
 	}
@@ -293,6 +294,59 @@ namespace day4
 	}
 }
 
+namespace day5
+{
+	void part1()
+	{
+		const auto& line = getLine("day5.txt");
+		int counter = 0;
+		for (unsigned int number = 0; number < 1'000'000'000; ++number)
+		{
+			auto hash = md5(line + std::to_string(number));
+			if (hash.substr(0, 5) == "00000")
+			{
+				std::cout << hash[5];
+				if (++counter == 8)
+				{
+					std::cout << std::endl;
+					return;
+				}
+			}
+		}
+	}
+
+	void part2()
+	{
+		const auto line = getLine("day5.txt");
+		std::vector<bool> isInserted{ false, false, false, false, false, false , false, false };
+		std::string result = "########";
+
+		int counter = 0;
+		for (unsigned int number = 0; number < 4'000'000'000; ++number)
+		{
+			auto test = line + std::to_string(number);
+			auto hash = md5(test);
+			if (hash.substr(0, 5) == "00000")
+			{
+				auto index = hash[5] - '0';
+				if (index > 7) continue;
+
+				if (!isInserted[index])
+				{
+					result[index] = hash[6];
+					isInserted[index] = true;
+
+					if (++counter == 8)
+					{
+						std::cout << result << std::endl;
+						return;
+					}
+				}
+			}
+		}
+	}
+}
+
 int main(int argc, char** argv)
 {
 	std::cout << "Day 1 Part 1 (expected 246): ";			day1::part1();
@@ -303,6 +357,8 @@ int main(int argc, char** argv)
 	std::cout << "Day 3 Part 2 (expected 1849): ";			day3::part2();
 	std::cout << "Day 4 Part 1 (expected 409147): ";		day4::part1();
 	std::cout << "Day 4 Part 2 (expected 991): ";			day4::part2();
+	std::cout << "Day 5 Part 1 (expected f97c354d): ";		day5::part1();
+	std::cout << "Day 5 Part 2 (expected 863dde27): ";		day5::part2();
 
 	system("pause");
 	return 0;
