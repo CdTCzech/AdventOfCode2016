@@ -347,6 +347,52 @@ namespace day5
 	}
 }
 
+namespace day6
+{
+	void part1(bool doPart2 = false)
+	{
+		std::vector<std::vector<int>> frequencyMap;
+		bool firstLine = true;
+
+		for (const auto& line : getLineByLine("day6.txt"))
+		{
+			if (firstLine)
+			{
+				for (const auto& character : line)
+				{
+					frequencyMap.emplace_back(std::vector<int>(26, 0));
+				}
+
+				firstLine = false;
+			}
+
+			for (size_t i = 0; i < line.size(); ++i)
+			{
+				++frequencyMap[i][line[i] - 'a'];
+			}
+		}
+
+		for (auto& characterVector : frequencyMap)
+		{
+			if (doPart2)
+			{
+				std::cout << static_cast<char>(std::distance(characterVector.cbegin(), std::min_element(characterVector.cbegin(), characterVector.cend())) + 'a');
+			}
+			else
+			{
+				std::cout << static_cast<char>(std::distance(characterVector.cbegin(), std::max_element(characterVector.cbegin(), characterVector.cend())) + 'a');
+			}
+		}
+
+		std::cout << std::endl;
+	}
+
+	void part2()
+	{
+		part1(true);
+	}
+}
+
 int main(int argc, char** argv)
 {
 	std::cout << "Day 1 Part 1 (expected 246): ";			day1::part1();
@@ -359,6 +405,8 @@ int main(int argc, char** argv)
 	std::cout << "Day 4 Part 2 (expected 991): ";			day4::part2();
 	std::cout << "Day 5 Part 1 (expected f97c354d): ";		day5::part1();
 	std::cout << "Day 5 Part 2 (expected 863dde27): ";		day5::part2();
+	std::cout << "Day 6 Part 1 (expected bjosfbce): ";		day6::part1();
+	std::cout << "Day 6 Part 2 (expected veqfxzfx): ";		day6::part2();
 
 	system("pause");
 	return 0;
