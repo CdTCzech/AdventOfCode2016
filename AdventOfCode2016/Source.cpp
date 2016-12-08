@@ -393,6 +393,93 @@ namespace day6
 	}
 }
 
+namespace day7
+{
+	void part1(bool doPart2 = false)
+	{
+		uint64 result = 0;
+
+		for (auto& line : getLineByLine("day7.txt"))
+		{
+			std::vector<std::string> tokens;
+			std::size_t start = 0, end = 0;
+			while ((end = line.find_first_of("[]", start)) != std::string::npos) {
+				if (end != start) {
+					tokens.push_back({ line.substr(start, end - start) });
+				}
+				start = end + 1;
+			}
+			if (end != start) {
+				tokens.push_back({ line.substr(start) });
+			}
+
+			bool isInside = false;
+			bool foundAbba = false;
+			bool foundInside = false;
+
+			std::set<std::string> insideSet;
+			std::set<std::string> outsideSet;
+
+			for (const auto& token : tokens)
+			{
+				for (size_t i = 0; i < token.size() - (doPart2 ? 2 : 3); ++i)
+				{
+					if (doPart2)
+					{
+						if (token[i] == token[i + 2] && token[i] != token[i + 1])
+						{
+							if (isInside)
+								insideSet.emplace(token[i + 1], token[i]);
+							else
+								outsideSet.emplace(token[i], token[i + 1]);
+						}
+					}
+					else
+					{
+						if (token[i] == token[i + 3] && token[i + 1] == token[i + 2] && token[i] != token[i + 1])
+						{
+							if (isInside)
+							{
+								foundInside = true;
+								break;
+							}
+							else
+							{
+								foundAbba = true;
+							}
+						}
+					}
+				}
+
+				isInside = !isInside;
+			}
+
+			if (doPart2)
+			{
+				for (const auto& aba : insideSet)
+				{
+					if (outsideSet.find(aba) != outsideSet.cend())
+					{
+						++result;
+						break;
+					}
+				}
+			}
+			else
+			{
+				if (!foundInside && foundAbba) ++result;
+			}
+		}
+
+		std::cout << result << std::endl;
+	}
+
+	void part2()
+	{
+		part1(true);
+	}
+}
+
 int main(int argc, char** argv)
 {
 	std::cout << "Day 1 Part 1 (expected 246): ";			day1::part1();
@@ -407,6 +494,8 @@ int main(int argc, char** argv)
 	std::cout << "Day 5 Part 2 (expected 863dde27): ";		day5::part2();
 	std::cout << "Day 6 Part 1 (expected bjosfbce): ";		day6::part1();
 	std::cout << "Day 6 Part 2 (expected veqfxzfx): ";		day6::part2();
+	std::cout << "Day 7 Part 1 (expected 115): ";			day7::part1();
+	std::cout << "Day 7 Part 2 (expected 231): ";			day7::part2();
 
 	system("pause");
 	return 0;
