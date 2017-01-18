@@ -480,6 +480,139 @@ namespace day7
 	}
 }
 
+namespace day8
+{
+	void part1(bool doPart2 = false)
+	{
+		uint64 result = 0;
+		std::array<std::array<bool, 50>, 6> display;
+		for (auto& row : display)
+		{
+			for (auto& column : row)
+			{
+				column = false;
+			}
+		}
+
+		for (const auto& line : getLineByLine("day8.txt"))
+		{
+			std::istringstream iss(line);
+			std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{} };
+			if (tokens[0] == "rect")
+			{
+				std::string numberBuffer;
+				uint64 wide = 0;
+				uint64 tall = 0;
+				for (const auto& character : tokens[1])
+				{
+					if (character == 'x')
+					{
+						std::istringstream numberStream(numberBuffer);
+						numberStream >> wide;
+						numberBuffer.clear();
+						continue;
+					}
+
+					numberBuffer += character;
+				}
+				std::istringstream numberStream(numberBuffer);
+				numberStream >> tall;
+
+				for (uint64 row = 0; row < tall; ++row)
+				{
+					for (uint64 column = 0; column < wide; ++column)
+					{
+						display[row][column] = true;
+					}
+				}
+			}
+			else
+			{
+				std::string numberBuffer;
+				uint64 xy = 0;
+				uint64 by = 0;
+
+				for (const auto& character : tokens[2])
+				{
+					if (character == 'x' || character == 'y' || character == '=') continue;
+					numberBuffer += character;
+				}
+				std::istringstream numberStream1(numberBuffer);
+				numberStream1 >> xy;
+				numberBuffer.clear();
+
+				for (const auto& character : tokens[4])
+				{
+					numberBuffer += character;
+				}
+				std::istringstream numberStream2(numberBuffer);
+				numberStream2 >> by;
+
+				if (tokens[1] == "row")
+				{
+					for (uint64 i = 0; i < by; ++i)
+					{
+						bool buffer = display[xy].back();
+						for (uint64 j = display[xy].size() - 1; j > 0; --j)
+						{
+							display[xy][j] = display[xy][j - 1];
+						}
+						display[xy][0] = buffer;
+					}
+				}
+				else
+				{
+					for (uint64 i = 0; i < by; ++i)
+					{
+						bool buffer = display.back()[xy];
+						for (uint64 j = display.size() - 1; j > 0; --j)
+						{
+							display[j][xy] = display[j - 1][xy];
+						}
+						display[0][xy] = buffer;
+					}
+				}
+			}
+		}
+
+		if (doPart2)
+		{
+			std::cout << std::endl;
+			for (auto& row : display)
+			{
+				for (auto& column : row)
+				{
+					if (column)
+					{
+						std::cout << "#";
+					}
+					else
+					{
+						std::cout << " ";
+					}
+				}
+				std::cout << std::endl;
+			}
+		}
+		else
+		{
+			for (auto& row : display)
+			{
+				for (auto& column : row)
+				{
+					if (column) ++result;
+				}
+			}
+			std::cout << result << std::endl;
+		}
+	}
+
+	void part2()
+	{
+		part1(true);
+	}
+}
+
 int main(int argc, char** argv)
 {
 	std::cout << "Day 1 Part 1 (expected 246): ";			day1::part1();
@@ -496,6 +629,9 @@ int main(int argc, char** argv)
 	std::cout << "Day 6 Part 2 (expected veqfxzfx): ";		day6::part2();
 	std::cout << "Day 7 Part 1 (expected 115): ";			day7::part1();
 	std::cout << "Day 7 Part 2 (expected 231): ";			day7::part2();
+	std::cout << "Day 8 Part 1 (expected 116): ";			day8::part1();
+	std::cout << "Day 8 Part 2 (expected UPOJFLBCEZ): ";	day8::part2();
+
 
 	system("pause");
 	return 0;
