@@ -613,25 +613,137 @@ namespace day8
 	}
 }
 
+namespace day9
+{
+	void part1()
+	{
+		std::string result;
+		const auto& line = getLine("day9.txt");
+		size_t index = 0;
+
+		while (index < line.size())
+		{
+			if (line[index] == '(')
+			{
+				std::string buffer;
+				uint64 characters = 0;
+				uint64 repeats = 0;
+
+				++index;
+				while (line[index] >= '0' && line[index] <= '9')
+				{
+					buffer += line[index];
+					++index;
+				}
+				std::istringstream numberStream1(buffer);
+				numberStream1 >> characters;
+				buffer.clear();
+
+				++index;
+				while (line[index] >= '0' && line[index] <= '9')
+				{
+					buffer += line[index];
+					++index;
+				}
+				std::istringstream numberStream2(buffer);
+				numberStream2 >> repeats;
+				buffer.clear();
+
+				for (uint64 i = 0; i < characters; ++i)
+				{
+					++index;
+					buffer += line[index];
+				}
+
+				for (uint64 i = 0; i < repeats; ++i)
+				{
+					result += buffer;
+				}
+			}
+			else
+			{
+				result += line[index];
+			}
+			++index;
+		}
+
+		std::cout << result.size() << std::endl;
+	}
+
+	void part2()
+	{
+		uint64 result = 0;
+		size_t index = 0;
+
+		const auto& line = getLine("day9.txt");
+		std::vector<uint64> weights;
+		weights.resize(line.size());
+		std::fill(weights.begin(), weights.end(), 1);
+
+		while (index < line.size())
+		{
+			if (line[index] == '(')
+			{
+				std::string buffer;
+				uint64 characters = 0;
+				uint64 repeats = 0;
+
+				++index;
+				while (line[index] >= '0' && line[index] <= '9')
+				{
+					buffer += line[index];
+					++index;
+				}
+				std::istringstream numberStream1(buffer);
+				numberStream1 >> characters;
+				buffer.clear();
+
+				++index;
+				while (line[index] >= '0' && line[index] <= '9')
+				{
+					buffer += line[index];
+					++index;
+				}
+				std::istringstream numberStream2(buffer);
+				numberStream2 >> repeats;
+				buffer.clear();
+
+				for (uint64 i = 0; i < characters; ++i)
+				{
+					weights[index + i + 1] *= repeats;
+				}
+			}
+			else
+			{
+				result += weights[index];
+			}
+			++index;
+		}
+
+		std::cout << result << std::endl;
+	}
+}
+
 int main(int argc, char** argv)
 {
-	std::cout << "Day 1 Part 1 (expected 246): ";			day1::part1();
-	std::cout << "Day 1 Part 2 (expected 124): ";			day1::part2();
-	std::cout << "Day 2 Part 1 (expected 24862): ";			day2::part1();
-	std::cout << "Day 2 Part 2 (expected 46C91): ";			day2::part2();
-	std::cout << "Day 3 Part 1 (expected 993): ";			day3::part1();
-	std::cout << "Day 3 Part 2 (expected 1849): ";			day3::part2();
-	std::cout << "Day 4 Part 1 (expected 409147): ";		day4::part1();
-	std::cout << "Day 4 Part 2 (expected 991): ";			day4::part2();
-	std::cout << "Day 5 Part 1 (expected f97c354d): ";		day5::part1();
-	std::cout << "Day 5 Part 2 (expected 863dde27): ";		day5::part2();
-	std::cout << "Day 6 Part 1 (expected bjosfbce): ";		day6::part1();
-	std::cout << "Day 6 Part 2 (expected veqfxzfx): ";		day6::part2();
-	std::cout << "Day 7 Part 1 (expected 115): ";			day7::part1();
-	std::cout << "Day 7 Part 2 (expected 231): ";			day7::part2();
-	std::cout << "Day 8 Part 1 (expected 116): ";			day8::part1();
-	std::cout << "Day 8 Part 2 (expected UPOJFLBCEZ): ";	day8::part2();
-
+	std::cout << "Day 1 Part 1 (expected 246): ";				day1::part1();
+	std::cout << "Day 1 Part 2 (expected 124): ";				day1::part2();
+	std::cout << "Day 2 Part 1 (expected 24862): ";				day2::part1();
+	std::cout << "Day 2 Part 2 (expected 46C91): ";				day2::part2();
+	std::cout << "Day 3 Part 1 (expected 993): ";				day3::part1();
+	std::cout << "Day 3 Part 2 (expected 1849): ";				day3::part2();
+	std::cout << "Day 4 Part 1 (expected 409147): ";			day4::part1();
+	std::cout << "Day 4 Part 2 (expected 991): ";				day4::part2();
+	std::cout << "Day 5 Part 1 (expected f97c354d): ";			day5::part1();
+	std::cout << "Day 5 Part 2 (expected 863dde27): ";			day5::part2();
+	std::cout << "Day 6 Part 1 (expected bjosfbce): ";			day6::part1();
+	std::cout << "Day 6 Part 2 (expected veqfxzfx): ";			day6::part2();
+	std::cout << "Day 7 Part 1 (expected 115): ";				day7::part1();
+	std::cout << "Day 7 Part 2 (expected 231): ";				day7::part2();
+	std::cout << "Day 8 Part 1 (expected 116): ";				day8::part1();
+	std::cout << "Day 8 Part 2 (expected UPOJFLBCEZ): ";		day8::part2();
+	std::cout << "Day 9 Part 1 (expected 150914): ";			day9::part1();
+	std::cout << "Day 9 Part 2 (expected 11052855125): ";		day9::part2();
 
 	system("pause");
 	return 0;
