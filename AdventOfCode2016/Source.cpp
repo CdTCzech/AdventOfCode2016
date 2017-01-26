@@ -1,10 +1,12 @@
 #include <algorithm>
 #include <array>
+#include <bitset> 
 #include <iostream>
 #include <iterator>
 #include <locale>
 #include <map>
 #include <numeric>
+#include <queue>
 #include <set>
 #include <sstream>
 #include <vector>
@@ -803,6 +805,71 @@ namespace day12
 	}
 }
 
+namespace day13
+{
+	void part1()
+	{
+		std::queue<std::pair<int64, int64>> toGo;
+		std::set<std::pair<int64, int64>> visited;
+		std::map<std::pair<int64, int64>, std::pair<int64, int64>> path;
+		std::pair<int64, int64> result = { 31, 39 };
+		toGo.push({ 1, 1 });
+		visited.insert({ 1, 1 });
+
+		while (!toGo.empty())
+		{
+			auto head = toGo.front();
+			toGo.pop();
+			std::cout << head.first << ", " << head.second << std::endl;
+
+			std::vector<std::pair<int64, int64>> neighbors =
+			{
+				{ head.first + 1, head.second },
+				{ head.first - 1, head.second },
+				{ head.first, head.second + 1 },
+				{ head.first, head.second - 1 }
+			};
+
+			for (auto& neighbor : neighbors)
+			{
+				if (neighbor.first < 0 || neighbor.second < 0 || visited.find(neighbor) != visited.end())
+				{
+					continue;
+				}
+
+				uint64 x = neighbor.first;
+				uint64 y = neighbor.second;
+				uint64 number = x * x + 3 * x + 2 * x * y + y + y * y;
+				number += 1350;
+				std::bitset<64> bits(number);
+
+				if (bits.count() % 2)
+				{
+					continue;
+				}
+
+				path.insert({ neighbor, head });
+
+				if (neighbor == result)
+				{
+					uint64 result = 0;
+					auto previous = path.find(neighbor);
+					while (previous != path.end())
+					{
+						++result;
+						previous = path.find(previous->second);
+					}
+					std::cout << result << std::endl;
+					return;
+				}
+
+				visited.insert(neighbor);
+				toGo.push(neighbor);
+			}
+		}
+	}
+}
+
 int main(int argc, char** argv)
 {
 	std::cout << "Day 1 Part 1 (expected 246): ";				day1::part1();
@@ -825,6 +892,7 @@ int main(int argc, char** argv)
 	std::cout << "Day 9 Part 2 (expected 11052855125): ";		day9::part2();
 	std::cout << "Day 12 Part 1 (expected 318020): ";			day12::part1();
 	std::cout << "Day 12 Part 2 (expected 9227674): ";			day12::part2();
+	std::cout << "Day 13 Part 1 (expected 92): ";				day13::part1();
 
 	system("pause");
 	return 0;
