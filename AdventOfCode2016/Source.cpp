@@ -724,6 +724,85 @@ namespace day9
 	}
 }
 
+namespace day12
+{
+	void part1(bool doPart2 = false)
+	{
+		std::vector<std::vector<std::string>> codeLines;
+		for (const auto& line : getLineByLine("day12.txt"))
+		{
+			std::istringstream iss(line);
+			std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{} };
+			codeLines.push_back(tokens);
+		}
+
+		uint64 index = 0;
+		std::array<int64, 4> result = { 0, 0, 0, 0 };
+		if (doPart2)
+		{
+			result[2] = 1;
+		}
+
+		while (index < codeLines.size())
+		{
+			if (codeLines[index][0] == "cpy")
+			{
+				if (codeLines[index][1][0] >= 'a' && codeLines[index][1][0] <= 'd')
+				{
+					result[codeLines[index][2][0] - 'a'] = result[codeLines[index][1][0] - 'a'];
+				}
+				else
+				{
+					int64 number;
+					std::istringstream numberStream(codeLines[index][1]);
+					numberStream >> number;
+					result[codeLines[index][2][0] - 'a'] = number;
+				}
+			}
+			else if (codeLines[index][0] == "inc")
+			{
+				++result[codeLines[index][1][0] - 'a'];
+			}
+			else if (codeLines[index][0] == "dec")
+			{
+				--result[codeLines[index][1][0] - 'a'];
+			}
+			else if (codeLines[index][0] == "jnz")
+			{
+				int64 number1;
+				int64 number2;
+				std::istringstream numberStream1(codeLines[index][2]);
+				numberStream1 >> number2;
+
+				if (codeLines[index][1][0] >= 'a' && codeLines[index][1][0] <= 'd')
+				{
+					number1 = result[codeLines[index][1][0] - 'a'];
+				}
+				else
+				{
+					std::istringstream numberStream2(codeLines[index][1]);
+					numberStream2 >> number1;
+				}
+
+				if (number1)
+				{
+					index += number2;
+					--index;
+				}
+				
+			}
+			++index;
+		}
+
+		std::cout << result[0] << std::endl;
+	}
+
+	void part2()
+	{
+		part1(true);
+	}
+}
+
 int main(int argc, char** argv)
 {
 	std::cout << "Day 1 Part 1 (expected 246): ";				day1::part1();
@@ -744,6 +823,8 @@ int main(int argc, char** argv)
 	std::cout << "Day 8 Part 2 (expected UPOJFLBCEZ): ";		day8::part2();
 	std::cout << "Day 9 Part 1 (expected 150914): ";			day9::part1();
 	std::cout << "Day 9 Part 2 (expected 11052855125): ";		day9::part2();
+	std::cout << "Day 12 Part 1 (expected 318020): ";			day12::part1();
+	std::cout << "Day 12 Part 2 (expected 9227674): ";			day12::part2();
 
 	system("pause");
 	return 0;
