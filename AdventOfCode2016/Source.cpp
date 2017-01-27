@@ -9,6 +9,7 @@
 #include <queue>
 #include <set>
 #include <sstream>
+#include <thread>
 #include <vector>
 
 #include "Libraries\md5.h"
@@ -326,8 +327,7 @@ namespace day5
 		int counter = 0;
 		for (unsigned int number = 0; number < 4'000'000'000; ++number)
 		{
-			auto test = line + std::to_string(number);
-			auto hash = md5(test);
+			auto hash = md5(line + std::to_string(number));
 			if (hash.substr(0, 5) == "00000")
 			{
 				auto index = hash[5] - '0';
@@ -820,7 +820,6 @@ namespace day13
 		{
 			auto head = toGo.front();
 			toGo.pop();
-			std::cout << head.first << ", " << head.second << std::endl;
 
 			std::vector<std::pair<int64, int64>> neighbors =
 			{
@@ -870,6 +869,99 @@ namespace day13
 	}
 }
 
+namespace day14
+{
+	size_t THREADSIZE = 8;
+
+	void part1(bool doPart2 = false)
+	{
+		const auto line = getLine("day14.txt");
+		auto keyNumber = 0;
+		std::vector<std::string> hashes;
+		std::vector<std::thread> threads;
+		hashes.resize(24'000);
+		threads.resize(THREADSIZE);
+
+		for (unsigned int number = 0; number < hashes.size(); number += THREADSIZE)
+		{
+			for (auto i = 0; i < THREADSIZE; ++i)
+			{
+				threads[i] = std::thread(
+					[&hashes, &line, doPart2](unsigned int number)
+					{
+						hashes[number] = md5(line + std::to_string(number));
+						if (doPart2)
+						{
+							for (auto i = 0; i < 2016; ++i)
+							{
+								hashes[number] = md5(hashes[number]);
+							}
+						}
+					},
+					number + i
+				);
+			}
+
+			for (auto i = 0; i < THREADSIZE; ++i)
+			{
+				threads[i].join();
+			}
+		}
+
+		for (unsigned int number = 0; number < hashes.size(); ++number)
+		{
+			char previous = ' ';
+			auto counter = 1;
+
+			for (size_t index = 0; index < 32; ++index)
+			{
+				if (hashes[number][index] == previous)
+				{
+					++counter;
+					if (counter == 3)
+					{
+						break;
+					}
+				}
+				else
+				{
+					previous = hashes[number][index];
+					counter = 1;
+				}
+			}
+
+			if (counter != 3)
+			{
+				continue;
+			}
+
+			for (unsigned int index = 0; index < 1'000; ++index)
+			{
+				auto number2 = number + index + 1;
+				std::string toFind = { previous, previous, previous, previous, previous };
+				auto it = hashes[number2].find(toFind);
+				if (it == std::string::npos)
+				{
+					continue;
+				}
+
+				++keyNumber;
+				if (keyNumber == 64)
+				{
+					std::cout << number << std::endl;
+					return;
+				}
+				break;
+			}
+		}
+	}
+
+	void part2()
+	{
+		part1(true);
+	}
+}
+
 int main(int argc, char** argv)
 {
 	std::cout << "Day 1 Part 1 (expected 246): ";				day1::part1();
@@ -893,6 +985,8 @@ int main(int argc, char** argv)
 	std::cout << "Day 12 Part 1 (expected 318020): ";			day12::part1();
 	std::cout << "Day 12 Part 2 (expected 9227674): ";			day12::part2();
 	std::cout << "Day 13 Part 1 (expected 92): ";				day13::part1();
+	std::cout << "Day 14 Part 1 (expected 15035): ";			day14::part1();
+	std::cout << "Day 14 Part 2 (expected 19968): ";			day14::part2();
 
 	system("pause");
 	return 0;
