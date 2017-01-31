@@ -24,6 +24,6 @@ auto getLineByLine(std::string filename, std::function<T(std::string&)> func = [
 
 	while (getline(infile, line))
 	{
-		yield func(line);
+		co_yield func(line);
 	}
 }

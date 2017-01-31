@@ -882,12 +882,12 @@ namespace day14
 		hashes.resize(24'000);
 		threads.resize(THREADSIZE);
 
-		for (unsigned int number = 0; number < hashes.size(); number += THREADSIZE)
+		for (size_t number = 0; number < hashes.size(); number += THREADSIZE)
 		{
 			for (auto i = 0; i < THREADSIZE; ++i)
 			{
 				threads[i] = std::thread(
-					[&hashes, &line, doPart2](unsigned int number)
+					[&hashes, &line, doPart2](size_t number)
 					{
 						hashes[number] = md5(line + std::to_string(number));
 						if (doPart2)
@@ -908,7 +908,7 @@ namespace day14
 			}
 		}
 
-		for (unsigned int number = 0; number < hashes.size(); ++number)
+		for (size_t number = 0; number < hashes.size(); ++number)
 		{
 			char previous = ' ';
 			auto counter = 1;
