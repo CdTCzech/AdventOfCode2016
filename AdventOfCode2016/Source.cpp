@@ -1007,6 +1007,50 @@ namespace day16
 	}
 }
 
+namespace day17
+{
+	std::string result;
+
+	void part1Recursion(int x, int y, std::string& path, bool doPart2)
+	{
+		if (x == 3 && y == 3)
+		{
+			if ((doPart2 && path.size() > result.size()) ||
+				(!doPart2 && (path.size() < result.size() || result.empty())))
+			{
+				result = path;
+			}
+			return;
+		}
+
+		auto hash = md5(path);
+
+		if (hash[0] > 'a' && hash[0] < 'g' && y > 0) part1Recursion(x, y - 1, path + 'U', doPart2);
+		if (hash[1] > 'a' && hash[1] < 'g' && y < 3) part1Recursion(x, y + 1, path + 'D', doPart2);
+		if (hash[2] > 'a' && hash[2] < 'g' && x > 0) part1Recursion(x - 1, y, path + 'L', doPart2);
+		if (hash[3] > 'a' && hash[3] < 'g' && x < 3) part1Recursion(x + 1, y, path + 'R', doPart2);
+	}
+
+	void part1(bool doPart2 = false)
+	{
+		auto path = getLine("day17.txt");;
+		part1Recursion(0, 0, path, doPart2);
+		if (doPart2)
+		{
+			std::cout << result.size() - 8 << std::endl;
+		}
+		else
+		{
+			std::cout << result.substr(8) << std::endl;
+		}
+	}
+
+	void part2()
+	{
+		part1(true);
+	}
+}
+
 int main(int argc, char** argv)
 {
 	std::cout << "Day 1 Part 1 (expected 246): ";					day1::part1();
@@ -1034,6 +1078,8 @@ int main(int argc, char** argv)
 	std::cout << "Day 14 Part 2 (expected 19968): ";				day14::part2();
 	std::cout << "Day 16 Part 1 (expected 10010010110011010): ";	day16::part1();
 	std::cout << "Day 16 Part 2 (expected 01010100101011100): ";	day16::part2();
+	std::cout << "Day 17 Part 1 (expected DDRUDLRRRD): ";			day17::part1();
+	std::cout << "Day 17 Part 2 (expected 398): ";					day17::part2();
 
 	system("pause");
 	return 0;
