@@ -1033,7 +1033,7 @@ namespace day17
 
 	void part1(bool doPart2 = false)
 	{
-		auto path = getLine("day17.txt");;
+		auto path = getLine("day17.txt");
 		part1Recursion(0, 0, path, doPart2);
 		if (doPart2)
 		{
@@ -1043,6 +1043,47 @@ namespace day17
 		{
 			std::cout << result.substr(8) << std::endl;
 		}
+	}
+
+	void part2()
+	{
+		part1(true);
+	}
+}
+
+namespace day18
+{
+	void part1(bool doPart2 = false)
+	{
+		auto pathA = '.' + getLine("day18.txt") + '.';
+		uint64 result = 0;
+		uint64 limit = (doPart2 ? 400'000 : 40);
+
+		for (uint64 i = 0; i < limit; ++i)
+		{
+			std::for_each(pathA.begin(), pathA.end(), [&result](char character) { if (character == '.') ++result; });
+			result -= 2;
+
+			std::string pathB;
+			pathB += '.';
+			for (size_t j = 1; j < pathA.size() - 1; ++j)
+			{
+				if ((pathA[j - 1] == '^' && pathA[j] == '^' && pathA[j + 1] == '.') ||
+					(pathA[j - 1] == '.' && pathA[j] == '^' && pathA[j + 1] == '^') ||
+					(pathA[j - 1] == '^' && pathA[j] == '.' && pathA[j + 1] == '.') ||
+					(pathA[j - 1] == '.' && pathA[j] == '.' && pathA[j + 1] == '^'))
+				{
+					pathB += '^';
+				}
+				else
+				{
+					pathB += '.';
+				}
+			}
+			pathB += '.';
+			pathA = pathB;
+		}
+		std::cout << result << std::endl;
 	}
 
 	void part2()
@@ -1080,6 +1121,8 @@ int main(int argc, char** argv)
 	std::cout << "Day 16 Part 2 (expected 01010100101011100): ";	day16::part2();
 	std::cout << "Day 17 Part 1 (expected DDRUDLRRRD): ";			day17::part1();
 	std::cout << "Day 17 Part 2 (expected 398): ";					day17::part2();
+	std::cout << "Day 18 Part 1 (expected 1978): ";					day18::part1();
+	std::cout << "Day 18 Part 2 (expected 20003246): ";				day18::part2();
 
 	system("pause");
 	return 0;
