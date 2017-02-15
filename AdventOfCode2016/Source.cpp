@@ -807,19 +807,31 @@ namespace day12
 
 namespace day13
 {
-	void part1()
+	void part1(bool doPart2 = false)
 	{
 		std::queue<std::pair<int64, int64>> toGo;
-		std::set<std::pair<int64, int64>> visited;
-		std::map<std::pair<int64, int64>, std::pair<int64, int64>> path;
+		std::map<std::pair<int64, int64>, int64> distances;
 		std::pair<int64, int64> result = { 31, 39 };
 		toGo.push({ 1, 1 });
-		visited.insert({ 1, 1 });
+		distances.insert({ {1, 1}, 0 });
 
 		while (!toGo.empty())
 		{
 			auto head = toGo.front();
 			toGo.pop();
+			const auto distance = distances[head];
+
+			if (doPart2 && distance == 50)
+			{
+				std::cout << distances.size() << std::endl;
+				return;
+			}
+
+			if (!doPart2 && head == result)
+			{
+				std::cout << distance << std::endl;
+				return;
+			}
 
 			std::vector<std::pair<int64, int64>> neighbors =
 			{
@@ -831,7 +843,7 @@ namespace day13
 
 			for (auto& neighbor : neighbors)
 			{
-				if (neighbor.first < 0 || neighbor.second < 0 || visited.find(neighbor) != visited.end())
+				if (neighbor.first < 0 || neighbor.second < 0 || distances.find(neighbor) != distances.end())
 				{
 					continue;
 				}
@@ -847,25 +859,15 @@ namespace day13
 					continue;
 				}
 
-				path.insert({ neighbor, head });
-
-				if (neighbor == result)
-				{
-					uint64 result = 0;
-					auto previous = path.find(neighbor);
-					while (previous != path.end())
-					{
-						++result;
-						previous = path.find(previous->second);
-					}
-					std::cout << result << std::endl;
-					return;
-				}
-
-				visited.insert(neighbor);
 				toGo.push(neighbor);
+				distances.insert({ neighbor, distance + 1 });
 			}
 		}
+	}
+
+	void part2()
+	{
+		part1(true);
 	}
 }
 
@@ -1115,6 +1117,7 @@ int main(int argc, char** argv)
 	std::cout << "Day 12 Part 1 (expected 318020): ";				day12::part1();
 	std::cout << "Day 12 Part 2 (expected 9227674): ";				day12::part2();
 	std::cout << "Day 13 Part 1 (expected 92): ";					day13::part1();
+	std::cout << "Day 13 Part 2 (expected 124): ";					day13::part2();
 	std::cout << "Day 14 Part 1 (expected 15035): ";				day14::part1();
 	std::cout << "Day 14 Part 2 (expected 19968): ";				day14::part2();
 	std::cout << "Day 16 Part 1 (expected 10010010110011010): ";	day16::part1();
