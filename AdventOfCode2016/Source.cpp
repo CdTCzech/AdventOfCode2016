@@ -726,6 +726,14 @@ namespace day9
 	}
 }
 
+namespace day10
+{
+	void part1()
+	{
+
+	}
+}
+
 namespace day12
 {
 	void part1(bool doPart2 = false)
@@ -964,6 +972,57 @@ namespace day14
 	}
 }
 
+namespace day15
+{
+	void part1(bool doPart2 = false)
+	{
+		uint64 time = 0;
+		std::vector<std::pair<int, int>> disks;
+		std::vector<int> positions;
+
+		for (const auto& line : getLineByLine("day15.txt"))
+		{
+			std::istringstream iss(line);
+			std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{} };
+			int number1, number2;
+			std::istringstream numberStream1(tokens[3]);
+			std::istringstream numberStream2(tokens[11].substr(0, tokens[11].size() - 1));
+			numberStream1 >> number1;
+			numberStream2 >> number2;
+			disks.emplace_back(number1, number2);
+		}
+
+		if (doPart2)
+		{
+			disks.emplace_back(11, 0);
+		}
+
+		positions.resize(disks.size());
+
+		for (size_t i = 0; i < disks.size(); ++i)
+		{
+			positions[i] = (disks[i].second + i + 1) % disks[i].first;
+		}
+
+		while (!std::equal(positions.begin() + 1, positions.end(), positions.begin()))
+		{
+			for (size_t i = 0; i < disks.size(); ++i)
+			{
+				++positions[i];
+				positions[i] %= disks[i].first;
+			}
+			++time;
+		} 
+
+		std::cout << time << std::endl;
+	}
+
+	void part2()
+	{
+		part1(true);
+	}
+}
+
 namespace day16
 {
 	void part1(bool doPart2 = false)
@@ -1114,12 +1173,15 @@ int main(int argc, char** argv)
 	std::cout << "Day 8 Part 2 (expected UPOJFLBCEZ): ";			day8::part2();
 	std::cout << "Day 9 Part 1 (expected 150914): ";				day9::part1();
 	std::cout << "Day 9 Part 2 (expected 11052855125): ";			day9::part2();
+	std::cout << "Day 10 Part 1 (expected ): ";						day10::part1();
 	std::cout << "Day 12 Part 1 (expected 318020): ";				day12::part1();
 	std::cout << "Day 12 Part 2 (expected 9227674): ";				day12::part2();
 	std::cout << "Day 13 Part 1 (expected 92): ";					day13::part1();
 	std::cout << "Day 13 Part 2 (expected 124): ";					day13::part2();
 	std::cout << "Day 14 Part 1 (expected 15035): ";				day14::part1();
 	std::cout << "Day 14 Part 2 (expected 19968): ";				day14::part2();
+	std::cout << "Day 15 Part 1 (expected 148737): ";				day15::part1();
+	std::cout << "Day 15 Part 2 (expected 2353212): ";				day15::part2();
 	std::cout << "Day 16 Part 1 (expected 10010010110011010): ";	day16::part1();
 	std::cout << "Day 16 Part 2 (expected 01010100101011100): ";	day16::part2();
 	std::cout << "Day 17 Part 1 (expected DDRUDLRRRD): ";			day17::part1();
