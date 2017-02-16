@@ -728,9 +728,133 @@ namespace day9
 
 namespace day10
 {
-	void part1()
+	class Bot
 	{
+	public:
+		Bot(int chip) : low(chip), high(-1) {};
 
+		void addChip(int chip)
+		{
+			_ASSERT(high < 0);
+			high = chip;
+			if (low > high)
+			{
+				std::swap(low, high);
+			}
+		}
+
+		std::pair<int, int> getChips()
+		{
+			_ASSERT(high > 0);
+			return { low, high };
+		}
+
+	private:
+		int low;
+		int high;
+	};
+
+	void part1(bool doPart2 = false)
+	{
+		std::map<int, std::unique_ptr<Bot>> values;
+		std::map<int, std::pair<std::pair<bool, int>, std::pair<bool, int>>> gives;
+		std::map<int, int> outputs;
+		std::queue<int> toTake;
+
+		for (const auto& line : getLineByLine("day10.txt"))
+		{
+			std::istringstream iss(line);
+			std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{} };
+			if (tokens[0][0] == 'v')
+			{
+				int number1, number2;
+				std::istringstream numberStream1(tokens[1]);
+				std::istringstream numberStream2(tokens[5]);
+				numberStream1 >> number1;
+				numberStream2 >> number2;
+				if (values.find(number2) != values.end())
+				{
+					values[number2]->addChip(number1);
+					toTake.push(number2);
+				}
+				else
+				{
+					values.insert({ number2, std::make_unique<Bot>(number1) });
+				}
+			}
+			else
+			{
+				int number1, number2, number3;
+				std::istringstream numberStream1(tokens[1]);
+				std::istringstream numberStream2(tokens[6]);
+				std::istringstream numberStream3(tokens[11]);
+				numberStream1 >> number1;
+				numberStream2 >> number2;
+				numberStream3 >> number3;
+				_ASSERT(gives.find(number1) == gives.end());
+				gives.insert({ number1, { { tokens[5][0] == 'b', number2 }, { tokens[10][0] == 'b', number3 } } });
+			}
+		}
+
+		while (!toTake.empty())
+		{
+			auto head = toTake.front();
+			toTake.pop();
+			const auto chips = values[head]->getChips();
+
+			if (!doPart2 && chips.first == 17 && chips.second == 61)
+			{
+				std::cout << head << std::endl;
+				return;
+			}
+
+			const auto giveLow = gives[head].first;
+			const auto giveHigh = gives[head].second;
+
+			if (giveLow.first)
+			{
+				if (values.find(giveLow.second) != values.end())
+				{
+					values[giveLow.second]->addChip(chips.first);
+					toTake.push(giveLow.second);
+				}
+				else
+				{
+					values.insert({ giveLow.second, std::make_unique<Bot>(chips.first) });
+				}
+			}
+			else
+			{
+				outputs.insert({ giveLow.second, chips.first });
+			}
+
+			if (giveHigh.first)
+			{
+				if (values.find(giveHigh.second) != values.end())
+				{
+					values[giveHigh.second]->addChip(chips.second);
+					toTake.push(giveHigh.second);
+				}
+				else
+				{
+					values.insert({ giveHigh.second, std::make_unique<Bot>(chips.second) });
+				}
+			}
+			else
+			{
+				outputs.insert({ giveHigh.second, chips.second });
+			}
+		}
+
+		if (doPart2)
+		{
+			std::cout << outputs[0] * outputs[1] * outputs[2] << std::endl;
+		}
+	}
+
+	void part2()
+	{
+		part1(true);
 	}
 }
 
@@ -1173,7 +1297,8 @@ int main(int argc, char** argv)
 	std::cout << "Day 8 Part 2 (expected UPOJFLBCEZ): ";			day8::part2();
 	std::cout << "Day 9 Part 1 (expected 150914): ";				day9::part1();
 	std::cout << "Day 9 Part 2 (expected 11052855125): ";			day9::part2();
-	std::cout << "Day 10 Part 1 (expected ): ";						day10::part1();
+	std::cout << "Day 10 Part 1 (expected 157): ";					day10::part1();
+	std::cout << "Day 10 Part 2 (expected ): ";						day10::part2();
 	std::cout << "Day 12 Part 1 (expected 318020): ";				day12::part1();
 	std::cout << "Day 12 Part 2 (expected 9227674): ";				day12::part2();
 	std::cout << "Day 13 Part 1 (expected 92): ";					day13::part1();
