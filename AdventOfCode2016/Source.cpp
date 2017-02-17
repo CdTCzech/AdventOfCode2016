@@ -9,14 +9,13 @@
 #include <queue>
 #include <set>
 #include <sstream>
+#include <string>
 #include <thread>
 #include <vector>
 
 #include "Libraries\md5.h"
 #include "FileReader.h"
-
-typedef __int64 int64;
-typedef unsigned __int64 uint64;
+#include "Utils.h"
 
 
 namespace day1
@@ -42,10 +41,7 @@ namespace day1
 				numberString += token[i];
 			}
 
-			std::istringstream numberStream(numberString);
-			int64 number;
-			numberStream >> number;
-
+			auto number = toInteger(numberString);
 			auto turnRight = (token[0] == 'R');
 
 			for (int64 i = 0; i < number; ++i)
@@ -97,10 +93,6 @@ namespace day1
 		if (!doPart2)
 		{
 			std::cout << abs(x + y) << std::endl;
-		}
-		else
-		{
-			std::cout << "ERROR" << std::endl;
 		}
 	}
 
@@ -260,9 +252,7 @@ namespace day4
 
 			if (fiveMostCommon == tokens.back().substr(tokens.back().size() - 6, 5))
 			{
-				std::istringstream iss(tokens.back().substr(0, tokens.back().size() - 7));
-				int number;
-				iss >> number;
+				auto number = toInteger<int>(tokens.back().substr(0, tokens.back().size() - 7));
 
 				if (doPart2)
 				{
@@ -509,16 +499,14 @@ namespace day8
 				{
 					if (character == 'x')
 					{
-						std::istringstream numberStream(numberBuffer);
-						numberStream >> wide;
+						wide = toInteger<uint64>(numberBuffer);
 						numberBuffer.clear();
 						continue;
 					}
 
 					numberBuffer += character;
 				}
-				std::istringstream numberStream(numberBuffer);
-				numberStream >> tall;
+				tall = toInteger<uint64>(numberBuffer);
 
 				for (uint64 row = 0; row < tall; ++row)
 				{
@@ -539,16 +527,14 @@ namespace day8
 					if (character == 'x' || character == 'y' || character == '=') continue;
 					numberBuffer += character;
 				}
-				std::istringstream numberStream1(numberBuffer);
-				numberStream1 >> xy;
+				xy = toInteger<uint64>(numberBuffer);
 				numberBuffer.clear();
 
 				for (const auto& character : tokens[4])
 				{
 					numberBuffer += character;
 				}
-				std::istringstream numberStream2(numberBuffer);
-				numberStream2 >> by;
+				by = toInteger<uint64>(numberBuffer);
 
 				if (tokens[1] == "row")
 				{
@@ -637,8 +623,7 @@ namespace day9
 					buffer += line[index];
 					++index;
 				}
-				std::istringstream numberStream1(buffer);
-				numberStream1 >> characters;
+				characters = toInteger<uint64>(buffer);
 				buffer.clear();
 
 				++index;
@@ -647,8 +632,7 @@ namespace day9
 					buffer += line[index];
 					++index;
 				}
-				std::istringstream numberStream2(buffer);
-				numberStream2 >> repeats;
+				repeats = toInteger<uint64>(buffer);
 				buffer.clear();
 
 				for (uint64 i = 0; i < characters; ++i)
@@ -696,8 +680,7 @@ namespace day9
 					buffer += line[index];
 					++index;
 				}
-				std::istringstream numberStream1(buffer);
-				numberStream1 >> characters;
+				characters = toInteger<uint64>(buffer);
 				buffer.clear();
 
 				++index;
@@ -706,8 +689,7 @@ namespace day9
 					buffer += line[index];
 					++index;
 				}
-				std::istringstream numberStream2(buffer);
-				numberStream2 >> repeats;
+				repeats = toInteger<uint64>(buffer);
 				buffer.clear();
 
 				for (uint64 i = 0; i < characters; ++i)
@@ -767,11 +749,8 @@ namespace day10
 			std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{} };
 			if (tokens[0][0] == 'v')
 			{
-				int number1, number2;
-				std::istringstream numberStream1(tokens[1]);
-				std::istringstream numberStream2(tokens[5]);
-				numberStream1 >> number1;
-				numberStream2 >> number2;
+				auto number1 = toInteger<int>(tokens[1]);
+				auto number2 = toInteger<int>(tokens[5]);
 				if (values.find(number2) != values.end())
 				{
 					values[number2]->addChip(number1);
@@ -784,13 +763,9 @@ namespace day10
 			}
 			else
 			{
-				int number1, number2, number3;
-				std::istringstream numberStream1(tokens[1]);
-				std::istringstream numberStream2(tokens[6]);
-				std::istringstream numberStream3(tokens[11]);
-				numberStream1 >> number1;
-				numberStream2 >> number2;
-				numberStream3 >> number3;
+				auto number1 = toInteger<int>(tokens[1]);
+				auto number2 = toInteger<int>(tokens[6]);
+				auto number3 = toInteger<int>(tokens[11]);
 				_ASSERT(gives.find(number1) == gives.end());
 				gives.insert({ number1, { { tokens[5][0] == 'b', number2 }, { tokens[10][0] == 'b', number3 } } });
 			}
@@ -887,9 +862,7 @@ namespace day12
 				}
 				else
 				{
-					int64 number;
-					std::istringstream numberStream(codeLines[index][1]);
-					numberStream >> number;
+					auto number = toInteger(codeLines[index][1]);
 					result[codeLines[index][2][0] - 'a'] = number;
 				}
 			}
@@ -904,9 +877,7 @@ namespace day12
 			else if (codeLines[index][0] == "jnz")
 			{
 				int64 number1;
-				int64 number2;
-				std::istringstream numberStream1(codeLines[index][2]);
-				numberStream1 >> number2;
+				int64 number2 = toInteger(codeLines[index][2]);
 
 				if (codeLines[index][1][0] >= 'a' && codeLines[index][1][0] <= 'd')
 				{
@@ -914,8 +885,7 @@ namespace day12
 				}
 				else
 				{
-					std::istringstream numberStream2(codeLines[index][1]);
-					numberStream2 >> number1;
+					number1 = toInteger(codeLines[index][1]);
 				}
 
 				if (number1)
@@ -1108,12 +1078,7 @@ namespace day15
 		{
 			std::istringstream iss(line);
 			std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{} };
-			int number1, number2;
-			std::istringstream numberStream1(tokens[3]);
-			std::istringstream numberStream2(tokens[11].substr(0, tokens[11].size() - 1));
-			numberStream1 >> number1;
-			numberStream2 >> number2;
-			disks.emplace_back(number1, number2);
+			disks.emplace_back(toInteger<int>(tokens[3]), toInteger<int>(tokens[11].substr(0, tokens[11].size() - 1)));
 		}
 
 		if (doPart2)
@@ -1277,6 +1242,24 @@ namespace day18
 	}
 }
 
+namespace day19
+{
+	void part1()
+	{
+		auto number = toInteger<uint64>(getLine("day19.txt"));
+		auto powerOf2 = 1;
+		auto sum = 0;
+
+		while (sum < number)
+		{
+			powerOf2 *= 2;
+			sum += powerOf2;
+		}
+
+		std::cout << (number - (sum - powerOf2) - 1) * 2 - 1 << std::endl;
+	}
+}
+
 int main(int argc, char** argv)
 {
 	std::cout << "Day 1 Part 1 (expected 246): ";					day1::part1();
@@ -1298,7 +1281,7 @@ int main(int argc, char** argv)
 	std::cout << "Day 9 Part 1 (expected 150914): ";				day9::part1();
 	std::cout << "Day 9 Part 2 (expected 11052855125): ";			day9::part2();
 	std::cout << "Day 10 Part 1 (expected 157): ";					day10::part1();
-	std::cout << "Day 10 Part 2 (expected ): ";						day10::part2();
+	std::cout << "Day 10 Part 2 (expected 1085): ";					day10::part2();
 	std::cout << "Day 12 Part 1 (expected 318020): ";				day12::part1();
 	std::cout << "Day 12 Part 2 (expected 9227674): ";				day12::part2();
 	std::cout << "Day 13 Part 1 (expected 92): ";					day13::part1();
@@ -1313,6 +1296,7 @@ int main(int argc, char** argv)
 	std::cout << "Day 17 Part 2 (expected 398): ";					day17::part2();
 	std::cout << "Day 18 Part 1 (expected 1978): ";					day18::part1();
 	std::cout << "Day 18 Part 2 (expected 20003246): ";				day18::part2();
+	std::cout << "Day 19 Part 1 (expected 1834903): ";				day19::part1();
 
 	system("pause");
 	return 0;
