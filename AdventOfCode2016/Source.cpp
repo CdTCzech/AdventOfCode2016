@@ -1247,16 +1247,18 @@ namespace day19
 	void part1()
 	{
 		auto number = toInteger<uint64>(getLine("day19.txt"));
-		auto powerOf2 = 1;
-		auto sum = 0;
+		int64 logarithm = static_cast<int64>(std::log(number) / std::log(2));
+		int64 power = static_cast<int64>(std::pow(2, logarithm));
+		std::cout << (number - power) * 2 + 1 << std::endl;
+	}
 
-		while (sum < number)
-		{
-			powerOf2 *= 2;
-			sum += powerOf2;
-		}
-
-		std::cout << (number - (sum - powerOf2) - 1) * 2 - 1 << std::endl;
+	void part2()
+	{
+		auto number = toInteger<int64>(getLine("day19.txt"));
+		int64 logarithm = static_cast<int64>(std::log(number) / std::log(3));
+		int64 power = static_cast<int64>(std::pow(3, logarithm));
+		int64 maximum = std::max(number - 2 * power, static_cast<int64>(0));
+		std::cout << number - power + maximum << std::endl;
 	}
 }
 
@@ -1297,6 +1299,7 @@ int main(int argc, char** argv)
 	std::cout << "Day 18 Part 1 (expected 1978): ";					day18::part1();
 	std::cout << "Day 18 Part 2 (expected 20003246): ";				day18::part2();
 	std::cout << "Day 19 Part 1 (expected 1834903): ";				day19::part1();
+	std::cout << "Day 19 Part 2 (expected 1420280): ";				day19::part2();
 
 	system("pause");
 	return 0;
