@@ -26,12 +26,12 @@ namespace day1
 		std::istringstream iss(line);
 		std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{} };
 
-		int64 result = 0;
-		int64 x = 0;
-		int64 y = 0;
-		uint64 facing = 0;
+		int64_t result = 0;
+		int64_t x = 0;
+		int64_t y = 0;
+		uint64_t facing = 0;
 
-		std::set<std::pair<int64, int64>> locations;
+		std::set<std::pair<int64_t, int64_t>> locations;
 
 		for (auto& token : tokens)
 		{
@@ -44,9 +44,9 @@ namespace day1
 			auto number = toInteger(numberString);
 			auto turnRight = (token[0] == 'R');
 
-			for (int64 i = 0; i < number; ++i)
+			for (int64_t i = 0; i < number; ++i)
 			{
-				std::pair<int64, int64> location(x, y);
+				std::pair<int64_t, int64_t> location(x, y);
 				if (doPart2 && locations.find(location) != locations.cend())
 				{
 					std::cout << abs(x + y) << std::endl;
@@ -106,7 +106,7 @@ namespace day2
 {
 	void part1()
 	{
-		int64 result = 0;
+		int64_t result = 0;
 		int position = 5;
 
 		for (const auto& line : getLineByLine("day2.txt"))
@@ -165,12 +165,12 @@ namespace day3
 {
 	void part1()
 	{
-		uint64 result = 0;
+		uint64_t result = 0;
 
 		for (const auto& line : getLineByLine("day3.txt"))
 		{
 			std::istringstream iss(line);
-			int64 x, y, z;
+			int64_t x, y, z;
 			iss >> x >> y >> z;
 
 			if (x + y > z && x + z > y && y + z > x) ++result;
@@ -181,10 +181,10 @@ namespace day3
 
 	void part2()
 	{
-		uint64 result = 0;
-		int64 x1, x2, x3;
-		int64 y1, y2, y3;
-		int64 z1, z2, z3;
+		uint64_t result = 0;
+		int64_t x1, x2, x3;
+		int64_t y1, y2, y3;
+		int64_t z1, z2, z3;
 
 		int lineIndex = 1;
 		for (const auto& line : getLineByLine("day3.txt"))
@@ -213,7 +213,7 @@ namespace day4
 {
 	void part1(bool doPart2 = false)
 	{
-		int64 result = 0;
+		int64_t result = 0;
 
 		for (const auto& line : getLineByLine("day4.txt"))
 		{
@@ -389,7 +389,7 @@ namespace day7
 {
 	void part1(bool doPart2 = false)
 	{
-		uint64 result = 0;
+		uint64_t result = 0;
 
 		for (auto& line : getLineByLine("day7.txt"))
 		{
@@ -476,7 +476,7 @@ namespace day8
 {
 	void part1(bool doPart2 = false)
 	{
-		uint64 result = 0;
+		uint64_t result = 0;
 		std::array<std::array<bool, 50>, 6> display;
 		for (auto& row : display)
 		{
@@ -493,24 +493,24 @@ namespace day8
 			if (tokens[0] == "rect")
 			{
 				std::string numberBuffer;
-				uint64 wide = 0;
-				uint64 tall = 0;
+				uint64_t wide = 0;
+				uint64_t tall = 0;
 				for (const auto& character : tokens[1])
 				{
 					if (character == 'x')
 					{
-						wide = toInteger<uint64>(numberBuffer);
+						wide = toInteger<uint64_t>(numberBuffer);
 						numberBuffer.clear();
 						continue;
 					}
 
 					numberBuffer += character;
 				}
-				tall = toInteger<uint64>(numberBuffer);
+				tall = toInteger<uint64_t>(numberBuffer);
 
-				for (uint64 row = 0; row < tall; ++row)
+				for (uint64_t row = 0; row < tall; ++row)
 				{
-					for (uint64 column = 0; column < wide; ++column)
+					for (uint64_t column = 0; column < wide; ++column)
 					{
 						display[row][column] = true;
 					}
@@ -519,29 +519,29 @@ namespace day8
 			else
 			{
 				std::string numberBuffer;
-				uint64 xy = 0;
-				uint64 by = 0;
+				uint64_t xy = 0;
+				uint64_t by = 0;
 
 				for (const auto& character : tokens[2])
 				{
 					if (character == 'x' || character == 'y' || character == '=') continue;
 					numberBuffer += character;
 				}
-				xy = toInteger<uint64>(numberBuffer);
+				xy = toInteger<uint64_t>(numberBuffer);
 				numberBuffer.clear();
 
 				for (const auto& character : tokens[4])
 				{
 					numberBuffer += character;
 				}
-				by = toInteger<uint64>(numberBuffer);
+				by = toInteger<uint64_t>(numberBuffer);
 
 				if (tokens[1] == "row")
 				{
-					for (uint64 i = 0; i < by; ++i)
+					for (uint64_t i = 0; i < by; ++i)
 					{
 						bool buffer = display[xy].back();
-						for (uint64 j = display[xy].size() - 1; j > 0; --j)
+						for (uint64_t j = display[xy].size() - 1; j > 0; --j)
 						{
 							display[xy][j] = display[xy][j - 1];
 						}
@@ -550,10 +550,10 @@ namespace day8
 				}
 				else
 				{
-					for (uint64 i = 0; i < by; ++i)
+					for (uint64_t i = 0; i < by; ++i)
 					{
 						bool buffer = display.back()[xy];
-						for (uint64 j = display.size() - 1; j > 0; --j)
+						for (uint64_t j = display.size() - 1; j > 0; --j)
 						{
 							display[j][xy] = display[j - 1][xy];
 						}
@@ -614,8 +614,8 @@ namespace day9
 			if (line[index] == '(')
 			{
 				std::string buffer;
-				uint64 characters = 0;
-				uint64 repeats = 0;
+				uint64_t characters = 0;
+				uint64_t repeats = 0;
 
 				++index;
 				while (line[index] >= '0' && line[index] <= '9')
@@ -623,7 +623,7 @@ namespace day9
 					buffer += line[index];
 					++index;
 				}
-				characters = toInteger<uint64>(buffer);
+				characters = toInteger<uint64_t>(buffer);
 				buffer.clear();
 
 				++index;
@@ -632,16 +632,16 @@ namespace day9
 					buffer += line[index];
 					++index;
 				}
-				repeats = toInteger<uint64>(buffer);
+				repeats = toInteger<uint64_t>(buffer);
 				buffer.clear();
 
-				for (uint64 i = 0; i < characters; ++i)
+				for (uint64_t i = 0; i < characters; ++i)
 				{
 					++index;
 					buffer += line[index];
 				}
 
-				for (uint64 i = 0; i < repeats; ++i)
+				for (uint64_t i = 0; i < repeats; ++i)
 				{
 					result += buffer;
 				}
@@ -658,11 +658,11 @@ namespace day9
 
 	void part2()
 	{
-		uint64 result = 0;
+		uint64_t result = 0;
 		size_t index = 0;
 
 		const auto& line = getLine("day9.txt");
-		std::vector<uint64> weights;
+		std::vector<uint64_t> weights;
 		weights.resize(line.size());
 		std::fill(weights.begin(), weights.end(), 1);
 
@@ -671,8 +671,8 @@ namespace day9
 			if (line[index] == '(')
 			{
 				std::string buffer;
-				uint64 characters = 0;
-				uint64 repeats = 0;
+				uint64_t characters = 0;
+				uint64_t repeats = 0;
 
 				++index;
 				while (line[index] >= '0' && line[index] <= '9')
@@ -680,7 +680,7 @@ namespace day9
 					buffer += line[index];
 					++index;
 				}
-				characters = toInteger<uint64>(buffer);
+				characters = toInteger<uint64_t>(buffer);
 				buffer.clear();
 
 				++index;
@@ -689,10 +689,10 @@ namespace day9
 					buffer += line[index];
 					++index;
 				}
-				repeats = toInteger<uint64>(buffer);
+				repeats = toInteger<uint64_t>(buffer);
 				buffer.clear();
 
-				for (uint64 i = 0; i < characters; ++i)
+				for (uint64_t i = 0; i < characters; ++i)
 				{
 					weights[index + i + 1] *= repeats;
 				}
@@ -845,8 +845,8 @@ namespace day12
 			codeLines.push_back(tokens);
 		}
 
-		uint64 index = 0;
-		std::array<int64, 4> result = { 0, 0, 0, 0 };
+		uint64_t index = 0;
+		std::array<int64_t, 4> result = { 0, 0, 0, 0 };
 		if (doPart2)
 		{
 			result[2] = 1;
@@ -876,8 +876,8 @@ namespace day12
 			}
 			else if (codeLines[index][0] == "jnz")
 			{
-				int64 number1;
-				int64 number2 = toInteger(codeLines[index][2]);
+				int64_t number1;
+				int64_t number2 = toInteger(codeLines[index][2]);
 
 				if (codeLines[index][1][0] >= 'a' && codeLines[index][1][0] <= 'd')
 				{
@@ -911,9 +911,9 @@ namespace day13
 {
 	void part1(bool doPart2 = false)
 	{
-		std::queue<std::pair<int64, int64>> toGo;
-		std::map<std::pair<int64, int64>, int64> distances;
-		std::pair<int64, int64> result = { 31, 39 };
+		std::queue<std::pair<int64_t, int64_t>> toGo;
+		std::map<std::pair<int64_t, int64_t>, int64_t> distances;
+		std::pair<int64_t, int64_t> result = { 31, 39 };
 		toGo.push({ 1, 1 });
 		distances.insert({ {1, 1}, 0 });
 
@@ -935,7 +935,7 @@ namespace day13
 				return;
 			}
 
-			std::vector<std::pair<int64, int64>> neighbors =
+			std::vector<std::pair<int64_t, int64_t>> neighbors =
 			{
 				{ head.first + 1, head.second },
 				{ head.first - 1, head.second },
@@ -950,9 +950,9 @@ namespace day13
 					continue;
 				}
 
-				uint64 x = neighbor.first;
-				uint64 y = neighbor.second;
-				uint64 number = x * x + 3 * x + 2 * x * y + y + y * y;
+				uint64_t x = neighbor.first;
+				uint64_t y = neighbor.second;
+				uint64_t number = x * x + 3 * x + 2 * x * y + y + y * y;
 				number += 1350;
 				std::bitset<64> bits(number);
 
@@ -1070,7 +1070,7 @@ namespace day15
 {
 	void part1(bool doPart2 = false)
 	{
-		uint64 time = 0;
+		uint64_t time = 0;
 		std::vector<std::pair<int, int>> disks;
 		std::vector<int> positions;
 
@@ -1206,10 +1206,10 @@ namespace day18
 	void part1(bool doPart2 = false)
 	{
 		auto pathA = '.' + getLine("day18.txt") + '.';
-		uint64 result = 0;
-		uint64 limit = (doPart2 ? 400'000 : 40);
+		uint64_t result = 0;
+		uint64_t limit = (doPart2 ? 400'000 : 40);
 
-		for (uint64 i = 0; i < limit; ++i)
+		for (uint64_t i = 0; i < limit; ++i)
 		{
 			std::for_each(pathA.begin(), pathA.end(), [&result](char character) { if (character == '.') ++result; });
 			result -= 2;
@@ -1246,19 +1246,77 @@ namespace day19
 {
 	void part1()
 	{
-		auto number = toInteger<uint64>(getLine("day19.txt"));
-		int64 logarithm = static_cast<int64>(std::log(number) / std::log(2));
-		int64 power = static_cast<int64>(std::pow(2, logarithm));
+		auto number = toInteger<uint64_t>(getLine("day19.txt"));
+		int64_t logarithm = static_cast<int64_t>(std::log(number) / std::log(2));
+		int64_t power = static_cast<int64_t>(std::pow(2, logarithm));
 		std::cout << (number - power) * 2 + 1 << std::endl;
 	}
 
 	void part2()
 	{
-		auto number = toInteger<int64>(getLine("day19.txt"));
-		int64 logarithm = static_cast<int64>(std::log(number) / std::log(3));
-		int64 power = static_cast<int64>(std::pow(3, logarithm));
-		int64 maximum = std::max(number - 2 * power, static_cast<int64>(0));
+		auto number = toInteger<int64_t>(getLine("day19.txt"));
+		int64_t logarithm = static_cast<int64_t>(std::log(number) / std::log(3));
+		int64_t power = static_cast<int64_t>(std::pow(3, logarithm));
+		int64_t maximum = std::max(number - 2 * power, static_cast<int64_t>(0));
 		std::cout << number - power + maximum << std::endl;
+	}
+}
+
+namespace day20
+{
+	void part1(bool doPart2 = false)
+	{
+		std::vector<std::pair<uint32_t, uint32_t>> ranges;
+		std::vector<uint32_t> result;
+		uint32_t last = 0;
+
+		for (const auto& line : getLineByLine("day20.txt"))
+		{
+			uint32_t low, high;
+			std::size_t start = 0, end = 0;
+			while ((end = line.find('-', start)) != std::string::npos) {
+				if (end != start) {
+					low = toInteger<uint32_t>(line.substr(start, end - start));
+				}
+				start = end + 1;
+			}
+			if (end != start) {
+				high = toInteger<uint32_t>(line.substr(start));
+			}
+
+			ranges.emplace_back(low, high);
+		}
+
+		std::sort(ranges.begin(), ranges.end());
+
+		for (const auto& range : ranges)
+		{
+			if (range.first > last)
+			{
+				for (auto i = last + 1; i < range.first; ++i)
+				{
+					result.push_back(i);
+				}
+			}
+			
+			if (range.second > last) {
+				last = range.second;
+			}
+		}
+
+		if (doPart2)
+		{
+			std::cout << result.size() << std::endl;
+		}
+		else
+		{
+			std::cout << result[0] << std::endl;
+		}
+	}
+
+	void part2()
+	{
+		part1(true);
 	}
 }
 
@@ -1300,6 +1358,8 @@ int main(int argc, char** argv)
 	std::cout << "Day 18 Part 2 (expected 20003246): ";				day18::part2();
 	std::cout << "Day 19 Part 1 (expected 1834903): ";				day19::part1();
 	std::cout << "Day 19 Part 2 (expected 1420280): ";				day19::part2();
+	std::cout << "Day 20 Part 1 (expected 22887907): ";				day20::part1();
+	std::cout << "Day 20 Part 2 (expected 109): ";					day20::part2();
 
 	system("pause");
 	return 0;
