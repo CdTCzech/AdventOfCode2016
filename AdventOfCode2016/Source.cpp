@@ -1356,12 +1356,7 @@ namespace day21
 			else if (tokens[0][0] == 'r' && tokens[1][0] == 'b')
 			{
 				auto X = result.find(tokens[6][0]);
-				if (X >= 4)
-				{
-					++X;
-				}
-				++X;
-
+				X += (X >= 4) ? 2 : 1;
 				X = X % result.size();
 				std::rotate(result.begin(), result.begin() + (result.size() - X), result.end());
 			}
@@ -1379,6 +1374,76 @@ namespace day21
 
 				result.erase(X, 1);
 				result.insert(result.begin() + Y, temp);
+			}
+			else
+			{
+				_ASSERT(false);
+			}
+		}
+
+		std::cout << result << std::endl;
+	}
+
+	void part2()
+	{
+		std::string result = "fbgdceah";
+		std::vector<std::string> lines;
+
+		for (const auto& line : getLineByLine("day21.txt"))
+		{
+			lines.push_back(line);
+		}
+
+		std::reverse(lines.begin(), lines.end());
+
+		for (const auto& line : lines)
+		{
+			std::istringstream iss(line);
+			std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{} };
+
+			if (tokens[0][0] == 's' && tokens[1][0] == 'p')
+			{
+				auto X = toInteger<uint32_t>(tokens[2]);
+				auto Y = toInteger<uint32_t>(tokens[5]);
+				std::swap(result[Y], result[X]);
+			}
+			else if (tokens[0][0] == 's' && tokens[1][0] == 'l')
+			{
+				auto X = result.find(tokens[2][0]);
+				auto Y = result.find(tokens[5][0]);
+				std::swap(result[Y], result[X]);
+			}
+			else if (tokens[0][0] == 'r' && tokens[1][0] == 'l')
+			{
+				auto X = toInteger<uint32_t>(tokens[2]) % result.size();
+				std::rotate(result.begin(), result.begin() + (result.size() - X), result.end());
+			}
+			else if (tokens[0][0] == 'r' && tokens[1][0] == 'r')
+			{
+				auto X = toInteger<uint32_t>(tokens[2]) % result.size();
+				std::rotate(result.begin(), result.begin() + X, result.end());
+			}
+			else if (tokens[0][0] == 'r' && tokens[1][0] == 'b')
+			{
+				auto X = result.find(tokens[6][0]);
+				X += (X  != 0 && X % 2 == 0) ? result.size() : 0;
+				X = (X / 2 + 1) % result.size();
+				std::rotate(result.begin(), result.begin() + X, result.end());
+			}
+			else if (tokens[0][0] == 'r' && tokens[1][0] == 'p')
+			{
+				auto X = toInteger<uint32_t>(tokens[2]);
+				auto Y = toInteger<uint32_t>(tokens[4]);
+				std::reverse(result.begin() + X, result.begin() + Y + 1);
+			}
+			else if (tokens[0][0] == 'm' && tokens[1][0] == 'p')
+			{
+				auto X = toInteger<uint32_t>(tokens[2]);
+				auto Y = toInteger<uint32_t>(tokens[5]);
+				auto temp = result[Y];
+
+				result.erase(Y, 1);
+				result.insert(result.begin() + X, temp);
 			}
 			else
 			{
@@ -1431,6 +1496,7 @@ int main(int argc, char** argv)
 	std::cout << "Day 20 Part 1 (expected 22887907): ";				day20::part1();
 	std::cout << "Day 20 Part 2 (expected 109): ";					day20::part2();
 	std::cout << "Day 21 Part 1 (expected fdhbcgea): ";				day21::part1();
+	std::cout << "Day 21 Part 2 (expected egfbcadh): ";				day21::part2();
 
 	system("pause");
 	return 0;
