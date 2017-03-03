@@ -962,7 +962,7 @@ namespace day13
 				}
 
 				toGo.push(neighbor);
-				distances.insert({ neighbor, distance + 1 });
+				distances.emplace(neighbor, distance + 1);
 			}
 		}
 	}
@@ -1322,7 +1322,7 @@ namespace day20
 
 namespace day21
 {
-	void part1(bool doPart2 = false)
+	void part1()
 	{
 		std::string result = "abcdefgh";
 
@@ -1455,6 +1455,166 @@ namespace day21
 	}
 }
 
+namespace day22
+{
+	class Node
+	{
+	public:
+		Node(uint32_t x, uint32_t y, uint32_t size, uint32_t used, uint32_t avail, uint32_t use) :
+			m_x(x), m_y(y), m_size(size), m_used(used), m_avail(avail), m_use(use)
+		{}
+
+	public:
+		uint32_t m_x;
+		uint32_t m_y;
+		uint32_t m_size;
+		uint32_t m_used;
+		uint32_t m_avail;
+		uint32_t m_use;
+	};
+
+	uint32_t BFS(std::pair<uint32_t, uint32_t> start, std::pair<uint32_t, uint32_t> end, uint32_t maxX, uint32_t maxY, std::function<bool(std::pair<uint32_t, uint32_t>&)> isWall)
+	{
+		std::map<std::pair<uint32_t, uint32_t>, uint32_t> distances;
+		std::queue<std::pair<uint32_t, uint32_t>> toGo;
+		toGo.push(start);
+
+		while (!toGo.empty())
+		{
+			auto head = toGo.front();
+			toGo.pop();
+			const auto distance = distances[head];
+
+			std::vector<std::pair<uint32_t, uint32_t>> neighbors =
+			{
+				{ head.first + 1, head.second },
+				{ head.first - 1, head.second },
+				{ head.first, head.second + 1 },
+				{ head.first, head.second - 1 }
+			};
+
+			for (auto& neighbor : neighbors)
+			{
+				if (neighbor.first < 0 || neighbor.second < 0 || neighbor.first > maxX || neighbor.second > maxY || distances.find(neighbor) != distances.end())
+				{
+					continue;
+				}
+
+				if (isWall(neighbor))
+				{
+					continue;
+				}
+
+
+				if (neighbor.first == end.first && neighbor.second == end.second)
+				{
+					return distance + 1;
+				}
+
+				toGo.push(neighbor);
+				distances.emplace(neighbor, distance + 1);
+			}
+		}
+
+		return 0;
+	}
+
+	void part1(bool doPart2 = false)
+	{
+		std::vector<Node> nodes;
+		std::map<std::pair<uint32_t, uint32_t>, uint32_t> nodesMap;
+		size_t lineIndex = 0;
+		uint32_t result = 0;
+
+		uint32_t minimum = 500;
+		uint32_t maxX = 0;
+		uint32_t maxY = 0;
+		uint32_t emptyX = 0;
+		uint32_t emptyY = 0;
+
+		for (const auto& line : getLineByLine("day22.txt"))
+		{
+			if (lineIndex < 2)
+			{
+				++lineIndex;
+				continue;
+			}
+
+			std::istringstream iss(line);
+			std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{} };
+
+			std::size_t start = 0, end = 0;
+			while ((end = tokens[0].find('-', start)) != std::string::npos) {
+				if (end != start) {
+					tokens.push_back(tokens[0].substr(start, end - start));
+				}
+				start = end + 1;
+			}
+			if (end != start) {
+				tokens.push_back(tokens[0].substr(start));
+			}
+
+			tokens[1].pop_back();
+			tokens[2].pop_back();
+			tokens[3].pop_back();
+			tokens[4].pop_back();
+			auto size	= toInteger<uint32_t>(tokens[1]);
+			auto used	= toInteger<uint32_t>(tokens[2]);
+			auto avail	= toInteger<uint32_t>(tokens[3]);
+			auto use	= toInteger<uint32_t>(tokens[4]);
+
+			auto x		= toInteger<uint32_t>(tokens[6].substr(1));
+			auto y		= toInteger<uint32_t>(tokens[7].substr(1));
+
+			if (size < minimum) minimum = size;
+			if (x > maxX) maxX = x;
+			if (y > maxY) maxY = y;
+			if (used == 0)
+			{
+				emptyX = x;
+				emptyY = y;
+			}
+
+			nodes.emplace_back(x, y, size, used, avail, use);
+			nodesMap.emplace(std::make_pair(x, y), static_cast<uint32_t>(nodes.size() - 1));
+		}
+
+
+		if (doPart2)
+		{
+			auto isWall = [&nodes, &nodesMap, &minimum](std::pair<uint32_t, uint32_t> coord) { return nodes[nodesMap[coord]].m_used > minimum; };
+			auto distanceToGoal = BFS({ emptyX, emptyY }, { maxX - 1, 0 }, maxX, maxY, isWall);
+			auto distanceTo00 = BFS({ maxX - 1, 0 }, { 0, 0 }, maxX, maxY, isWall);
+			std::cout << distanceTo00 * 5 + 1 + distanceToGoal << std::endl;
+		}
+		else
+		{
+			for (size_t i = 0; i < nodes.size(); ++i)
+			{
+				if (nodes[i].m_used <= 0)
+				{
+					continue;
+				}
+
+				for (size_t j = 0; j < nodes.size(); ++j)
+				{
+					if (i != j && nodes[i].m_used <= nodes[j].m_avail)
+					{
+						++result;
+					}
+				}
+			}
+
+			std::cout << result << std::endl;
+		}
+	}
+
+	void part2()
+	{
+		part1(true);
+	}
+}
+
 int main(int argc, char** argv)
 {
 	std::cout << "Day 1 Part 1 (expected 246): ";					day1::part1();
@@ -1497,6 +1657,8 @@ int main(int argc, char** argv)
 	std::cout << "Day 20 Part 2 (expected 109): ";					day20::part2();
 	std::cout << "Day 21 Part 1 (expected fdhbcgea): ";				day21::part1();
 	std::cout << "Day 21 Part 2 (expected egfbcadh): ";				day21::part2();
+	std::cout << "Day 22 Part 1 (expected 1043): ";					day22::part1();
+	std::cout << "Day 22 Part 2 (expected 185): ";					day22::part2();
 
 	system("pause");
 	return 0;
