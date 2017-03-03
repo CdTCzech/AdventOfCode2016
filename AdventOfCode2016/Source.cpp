@@ -833,6 +833,19 @@ namespace day10
 	}
 }
 
+namespace day11
+{
+	void part1()
+	{
+		std::cout << std::endl;
+	}
+
+	void part2()
+	{
+		std::cout << std::endl;
+	}
+}
+
 namespace day12
 {
 	void part1(bool doPart2 = false)
@@ -1615,6 +1628,120 @@ namespace day22
 	}
 }
 
+namespace day23
+{
+	void part1(bool doPart2 = false)
+	{
+		std::vector<std::vector<std::string>> codeLines;
+		for (const auto& line : getLineByLine("day23.txt"))
+		{
+			std::istringstream iss(line);
+			std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{} };
+			codeLines.push_back(tokens);
+		}
+
+		uint64_t index = 0;
+		std::array<int64_t, 4> result = { 7, 0, 0, 0 };
+		if (doPart2)
+		{
+			result[0] = 12;
+		}
+
+		while (index < codeLines.size())
+		{
+			if (codeLines[index][0] == "cpy")
+			{
+				if (codeLines[index][1][0] >= 'a' && codeLines[index][1][0] <= 'd')
+				{
+					result[codeLines[index][2][0] - 'a'] = result[codeLines[index][1][0] - 'a'];
+				}
+				else if (codeLines[index][2][0] >= 'a' && codeLines[index][2][0] <= 'd')
+				{
+					auto number = toInteger(codeLines[index][1]);
+					result[codeLines[index][2][0] - 'a'] = number;
+				}
+			}
+			else if (codeLines[index][0] == "inc")
+			{
+				if (codeLines[index][1][0] >= 'a' && codeLines[index][1][0] <= 'd')
+				{
+					++result[codeLines[index][1][0] - 'a'];
+				}
+			}
+			else if (codeLines[index][0] == "dec")
+			{
+				if (codeLines[index][1][0] >= 'a' && codeLines[index][1][0] <= 'd')
+				{
+					--result[codeLines[index][1][0] - 'a'];
+				}
+			}
+			else if (codeLines[index][0] == "jnz")
+			{
+				int64_t number1;
+				if (codeLines[index][1][0] >= 'a' && codeLines[index][1][0] <= 'd')
+				{
+					number1 = result[codeLines[index][1][0] - 'a'];
+				}
+				else
+				{
+					number1 = toInteger(codeLines[index][1]);
+				}
+
+				int64_t number2;
+				if (codeLines[index][2][0] >= 'a' && codeLines[index][2][0] <= 'd')
+				{
+					number2 = result[codeLines[index][2][0] - 'a'];
+				}
+				else
+				{
+					number2 = toInteger(codeLines[index][2]);
+				}
+
+				if (number1)
+				{
+					index += number2;
+					--index;
+				}
+
+			}
+			else if (codeLines[index][0] == "tgl")
+			{
+				int64_t number;
+
+				if (codeLines[index][1][0] >= 'a' && codeLines[index][1][0] <= 'd')
+				{
+					number = result[codeLines[index][1][0] - 'a'];
+				}
+				else
+				{
+					number = toInteger(codeLines[index][1]);
+				}
+
+				auto newIndex = index + number;
+				if (newIndex >= 0 && newIndex < codeLines.size())
+				{
+					if (codeLines[newIndex].size() == 2)
+					{
+						codeLines[newIndex][0] = (codeLines[newIndex][0] == "inc") ? "dec" : "inc";
+					}
+					else if (codeLines[index + number].size() == 3)
+					{
+						codeLines[newIndex][0] = (codeLines[newIndex][0] == "jnz") ? "cpy" : "jnz";
+					}
+				}
+			}
+			++index;
+		}
+
+		std::cout << result[0] << std::endl;
+	}
+
+	void part2()
+	{
+		part1(true);
+	}
+}
+
 int main(int argc, char** argv)
 {
 	std::cout << "Day 1 Part 1 (expected 246): ";					day1::part1();
@@ -1637,6 +1764,8 @@ int main(int argc, char** argv)
 	std::cout << "Day 9 Part 2 (expected 11052855125): ";			day9::part2();
 	std::cout << "Day 10 Part 1 (expected 157): ";					day10::part1();
 	std::cout << "Day 10 Part 2 (expected 1085): ";					day10::part2();
+	std::cout << "Day 11 Part 1 (expected ): ";						day11::part1();
+	std::cout << "Day 11 Part 2 (expected ): ";						day11::part2();
 	std::cout << "Day 12 Part 1 (expected 318020): ";				day12::part1();
 	std::cout << "Day 12 Part 2 (expected 9227674): ";				day12::part2();
 	std::cout << "Day 13 Part 1 (expected 92): ";					day13::part1();
@@ -1659,6 +1788,8 @@ int main(int argc, char** argv)
 	std::cout << "Day 21 Part 2 (expected egfbcadh): ";				day21::part2();
 	std::cout << "Day 22 Part 1 (expected 1043): ";					day22::part1();
 	std::cout << "Day 22 Part 2 (expected 185): ";					day22::part2();
+	std::cout << "Day 23 Part 1 (expected 11736): ";				day23::part1();
+	std::cout << "Day 23 Part 2 (expected 479008296): ";			day23::part2();
 
 	system("pause");
 	return 0;
