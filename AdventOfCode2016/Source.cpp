@@ -1,6 +1,11 @@
+#include "Libraries\md5.h"
+
+#include "FileReader.h"
+#include "Utils.h"
+
 #include <algorithm>
 #include <array>
-#include <bitset> 
+#include <bitset>
 #include <iostream>
 #include <iterator>
 #include <locale>
@@ -13,20 +18,15 @@
 #include <thread>
 #include <vector>
 
-#include "Libraries\md5.h"
-#include "FileReader.h"
-#include "Utils.h"
-
 
 namespace day1
 {
-	void part1(bool doPart2 = false)
+	void part1(const bool doPart2 = false)
 	{
 		const auto& line = getLine("day1.txt");
 		std::istringstream iss(line);
 		std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{} };
 
-		int64_t result = 0;
 		int64_t x = 0;
 		int64_t y = 0;
 		uint64_t facing = 0;
@@ -41,12 +41,12 @@ namespace day1
 				numberString += token[i];
 			}
 
-			auto number = toInteger(numberString);
-			auto turnRight = (token[0] == 'R');
+			const auto number = toInteger(numberString);
+			const auto turnRight = (token[0] == 'R');
 
 			for (int64_t i = 0; i < number; ++i)
 			{
-				std::pair<int64_t, int64_t> location(x, y);
+				const std::pair<int64_t, int64_t> location(x, y);
 				if (doPart2 && locations.find(location) != locations.cend())
 				{
 					std::cout << abs(x + y) << std::endl;
@@ -100,7 +100,7 @@ namespace day1
 	{
 		part1(true);
 	}
-}
+}  // namespace day1
 
 namespace day2
 {
@@ -159,7 +159,7 @@ namespace day2
 		}
 		std::cout << result << std::endl;
 	}
-}
+}  // namespace day2
 
 namespace day3
 {
@@ -207,11 +207,11 @@ namespace day3
 
 		std::cout << result << std::endl;
 	}
-}
+}  // namespace day3
 
 namespace day4
 {
-	void part1(bool doPart2 = false)
+	void part1(const bool doPart2 = false)
 	{
 		int64_t result = 0;
 
@@ -285,7 +285,7 @@ namespace day4
 	{
 		part1(true);
 	}
-}
+}  // namespace day4
 
 namespace day5
 {
@@ -320,7 +320,7 @@ namespace day5
 			auto hash = md5(line + std::to_string(number));
 			if (hash.substr(0, 5) == "00000")
 			{
-				auto index = hash[5] - '0';
+				const auto index = hash[5] - '0';
 				if (index > 7) continue;
 
 				if (!isInserted[index])
@@ -337,11 +337,11 @@ namespace day5
 			}
 		}
 	}
-}
+}  // namespace day5
 
 namespace day6
 {
-	void part1(bool doPart2 = false)
+	void part1(const bool doPart2 = false)
 	{
 		std::vector<std::vector<int>> frequencyMap;
 		bool firstLine = true;
@@ -350,7 +350,7 @@ namespace day6
 		{
 			if (firstLine)
 			{
-				for (const auto& character : line)
+				for (size_t i = 0; i < line.size(); ++i)
 				{
 					frequencyMap.emplace_back(std::vector<int>(26, 0));
 				}
@@ -383,11 +383,11 @@ namespace day6
 	{
 		part1(true);
 	}
-}
+}  // namespace day6
 
 namespace day7
 {
-	void part1(bool doPart2 = false)
+	void part1(const bool doPart2 = false)
 	{
 		uint64_t result = 0;
 
@@ -470,14 +470,14 @@ namespace day7
 	{
 		part1(true);
 	}
-}
+}  // namespace day7
 
 namespace day8
 {
-	void part1(bool doPart2 = false)
+	void part1(const bool doPart2 = false)
 	{
 		uint64_t result = 0;
-		std::array<std::array<bool, 50>, 6> display;
+		std::array<std::array<bool, 50>, 6> display{};
 		for (auto& row : display)
 		{
 			for (auto& column : row)
@@ -540,7 +540,7 @@ namespace day8
 				{
 					for (uint64_t i = 0; i < by; ++i)
 					{
-						bool buffer = display[xy].back();
+						const bool buffer = display[xy].back();
 						for (uint64_t j = display[xy].size() - 1; j > 0; --j)
 						{
 							display[xy][j] = display[xy][j - 1];
@@ -552,7 +552,7 @@ namespace day8
 				{
 					for (uint64_t i = 0; i < by; ++i)
 					{
-						bool buffer = display.back()[xy];
+						const bool buffer = display.back()[xy];
 						for (uint64_t j = display.size() - 1; j > 0; --j)
 						{
 							display[j][xy] = display[j - 1][xy];
@@ -599,7 +599,7 @@ namespace day8
 	{
 		part1(true);
 	}
-}
+}  // namespace day8
 
 namespace day9
 {
@@ -706,16 +706,16 @@ namespace day9
 
 		std::cout << result << std::endl;
 	}
-}
+}  // namespace day9
 
 namespace day10
 {
 	class Bot
 	{
 	public:
-		Bot(int chip) : low(chip), high(-1) {};
+		Bot(const int chip) : low(chip), high(-1) {};
 
-		void addChip(int chip)
+		void addChip(const int chip)
 		{
 			_ASSERT(high < 0);
 			high = chip;
@@ -736,7 +736,7 @@ namespace day10
 		int high;
 	};
 
-	void part1(bool doPart2 = false)
+	void part1(const bool doPart2 = false)
 	{
 		std::map<int, std::unique_ptr<Bot>> values;
 		std::map<int, std::pair<std::pair<bool, int>, std::pair<bool, int>>> gives;
@@ -831,7 +831,7 @@ namespace day10
 	{
 		part1(true);
 	}
-}
+}  // namespace day10
 
 namespace day11
 {
@@ -844,17 +844,17 @@ namespace day11
 	{
 		std::cout << std::endl;
 	}
-}
+}  // namespace day11
 
 namespace day12
 {
-	void part1(bool doPart2 = false)
+	void part1(const bool doPart2 = false)
 	{
 		std::vector<std::vector<std::string>> codeLines;
 		for (const auto& line : getLineByLine("day12.txt"))
 		{
 			std::istringstream iss(line);
-			std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{} };
+			const std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{} };
 			codeLines.push_back(tokens);
 		}
 
@@ -875,7 +875,7 @@ namespace day12
 				}
 				else
 				{
-					auto number = toInteger(codeLines[index][1]);
+					const auto number = toInteger(codeLines[index][1]);
 					result[codeLines[index][2][0] - 'a'] = number;
 				}
 			}
@@ -890,7 +890,7 @@ namespace day12
 			else if (codeLines[index][0] == "jnz")
 			{
 				int64_t number1;
-				int64_t number2 = toInteger(codeLines[index][2]);
+				const int64_t number2 = toInteger(codeLines[index][2]);
 
 				if (codeLines[index][1][0] >= 'a' && codeLines[index][1][0] <= 'd')
 				{
@@ -906,7 +906,7 @@ namespace day12
 					index += number2;
 					--index;
 				}
-				
+
 			}
 			++index;
 		}
@@ -918,15 +918,15 @@ namespace day12
 	{
 		part1(true);
 	}
-}
+}  // namespace day12
 
 namespace day13
 {
-	void part1(bool doPart2 = false)
+	void part1(const bool doPart2 = false)
 	{
 		std::queue<std::pair<int64_t, int64_t>> toGo;
 		std::map<std::pair<int64_t, int64_t>, int64_t> distances;
-		std::pair<int64_t, int64_t> result = { 31, 39 };
+		const std::pair<int64_t, int64_t> result = { 31, 39 };
 		toGo.push({ 1, 1 });
 		distances.insert({ {1, 1}, 0 });
 
@@ -963,8 +963,8 @@ namespace day13
 					continue;
 				}
 
-				uint64_t x = neighbor.first;
-				uint64_t y = neighbor.second;
+				const auto x = neighbor.first;
+				const auto y = neighbor.second;
 				uint64_t number = x * x + 3 * x + 2 * x * y + y + y * y;
 				number += 1350;
 				std::bitset<64> bits(number);
@@ -984,7 +984,7 @@ namespace day13
 	{
 		part1(true);
 	}
-}
+}  // namespace day13
 
 namespace day14
 {
@@ -1055,7 +1055,7 @@ namespace day14
 			for (unsigned int index = 0; index < 1'000; ++index)
 			{
 				auto number2 = number + index + 1;
-				std::string toFind = { previous, previous, previous, previous, previous };
+				const std::string toFind = { previous, previous, previous, previous, previous };
 				auto it = hashes[number2].find(toFind);
 				if (it == std::string::npos)
 				{
@@ -1077,11 +1077,11 @@ namespace day14
 	{
 		part1(true);
 	}
-}
+}  // namespace day14
 
 namespace day15
 {
-	void part1(bool doPart2 = false)
+	void part1(const bool doPart2 = false)
 	{
 		uint64_t time = 0;
 		std::vector<std::pair<int, int>> disks;
@@ -1114,7 +1114,7 @@ namespace day15
 				positions[i] %= disks[i].first;
 			}
 			++time;
-		} 
+		}
 
 		std::cout << time << std::endl;
 	}
@@ -1123,15 +1123,14 @@ namespace day15
 	{
 		part1(true);
 	}
-}
+}  // namespace day15
 
 namespace day16
 {
-	void part1(bool doPart2 = false)
+	void part1(const bool doPart2 = false)
 	{
 		auto line = getLine("day16.txt");
 		const size_t diskLength = (doPart2) ? 35'651'584 : 272;
-		std::string result;
 
 		while (line.length() < diskLength)
 		{
@@ -1142,7 +1141,7 @@ namespace day16
 		}
 
 		line = line.substr(0, diskLength);
-		result = line;
+		auto result = line;
 
 		while ((result.length() % 2) == 0)
 		{
@@ -1168,13 +1167,13 @@ namespace day16
 	{
 		part1(true);
 	}
-}
+}  // namespace day16
 
 namespace day17
 {
 	std::string result;
 
-	void part1Recursion(int x, int y, std::string& path, bool doPart2)
+	void part1Recursion(const int x, const int y, const std::string&& path, const bool doPart2)
 	{
 		if (x == 3 && y == 3)
 		{
@@ -1194,10 +1193,10 @@ namespace day17
 		if (hash[3] > 'a' && hash[3] < 'g' && x < 3) part1Recursion(x + 1, y, path + 'R', doPart2);
 	}
 
-	void part1(bool doPart2 = false)
+	void part1(const bool doPart2 = false)
 	{
-		auto path = getLine("day17.txt");
-		part1Recursion(0, 0, path, doPart2);
+		const auto path = getLine("day17.txt");
+		part1Recursion(0, 0, std::move(path), doPart2);
 		if (doPart2)
 		{
 			std::cout << result.size() - 8 << std::endl;
@@ -1212,15 +1211,15 @@ namespace day17
 	{
 		part1(true);
 	}
-}
+}  // namespace day17
 
 namespace day18
 {
-	void part1(bool doPart2 = false)
+	void part1(const bool doPart2 = false)
 	{
 		auto pathA = '.' + getLine("day18.txt") + '.';
 		uint64_t result = 0;
-		uint64_t limit = (doPart2 ? 400'000 : 40);
+		const uint64_t limit = (doPart2 ? 400'000 : 40);
 
 		for (uint64_t i = 0; i < limit; ++i)
 		{
@@ -1253,31 +1252,31 @@ namespace day18
 	{
 		part1(true);
 	}
-}
+}  // namespace day18
 
 namespace day19
 {
 	void part1()
 	{
-		auto number = toInteger<uint64_t>(getLine("day19.txt"));
-		int64_t logarithm = static_cast<int64_t>(std::log(number) / std::log(2));
-		int64_t power = static_cast<int64_t>(std::pow(2, logarithm));
+		const auto number = toInteger<uint64_t>(getLine("day19.txt"));
+		const auto logarithm = static_cast<int64_t>(std::log(number) / std::log(2));
+		const auto power = static_cast<int64_t>(std::pow(2, logarithm));
 		std::cout << (number - power) * 2 + 1 << std::endl;
 	}
 
 	void part2()
 	{
-		auto number = toInteger<int64_t>(getLine("day19.txt"));
-		int64_t logarithm = static_cast<int64_t>(std::log(number) / std::log(3));
-		int64_t power = static_cast<int64_t>(std::pow(3, logarithm));
-		int64_t maximum = std::max(number - 2 * power, static_cast<int64_t>(0));
+		const auto number = toInteger<int64_t>(getLine("day19.txt"));
+		const auto logarithm = static_cast<int64_t>(std::log(number) / std::log(3));
+		const auto power = static_cast<int64_t>(std::pow(3, logarithm));
+		const auto maximum = std::max(number - 2 * power, static_cast<int64_t>(0));
 		std::cout << number - power + maximum << std::endl;
 	}
-}
+}  // namespace day19
 
 namespace day20
 {
-	void part1(bool doPart2 = false)
+	void part1(const bool doPart2 = false)
 	{
 		std::vector<std::pair<uint32_t, uint32_t>> ranges;
 		std::vector<uint32_t> result;
@@ -1311,7 +1310,7 @@ namespace day20
 					result.push_back(i);
 				}
 			}
-			
+
 			if (range.second > last) {
 				last = range.second;
 			}
@@ -1331,7 +1330,7 @@ namespace day20
 	{
 		part1(true);
 	}
-}
+}  // namespace day20
 
 namespace day21
 {
@@ -1346,24 +1345,24 @@ namespace day21
 
 			if (tokens[0][0] == 's' && tokens[1][0] == 'p')
 			{
-				auto X = toInteger<uint32_t>(tokens[2]);
-				auto Y = toInteger<uint32_t>(tokens[5]);
+				const auto X = toInteger<uint32_t>(tokens[2]);
+				const auto Y = toInteger<uint32_t>(tokens[5]);
 				std::swap(result[X], result[Y]);
 			}
 			else if (tokens[0][0] == 's' && tokens[1][0] == 'l')
 			{
-				auto X = result.find(tokens[2][0]);
-				auto Y = result.find(tokens[5][0]);
+				const auto X = result.find(tokens[2][0]);
+				const auto Y = result.find(tokens[5][0]);
 				std::swap(result[X], result[Y]);
 			}
 			else if (tokens[0][0] == 'r' && tokens[1][0] == 'l')
 			{
-				auto X = toInteger<uint32_t>(tokens[2]) % result.size();
+				const auto X = toInteger<uint32_t>(tokens[2]) % result.size();
 				std::rotate(result.begin(), result.begin() + X, result.end());
 			}
 			else if (tokens[0][0] == 'r' && tokens[1][0] == 'r')
 			{
-				auto X = toInteger<uint32_t>(tokens[2]) % result.size();
+				const auto X = toInteger<uint32_t>(tokens[2]) % result.size();
 				std::rotate(result.begin(), result.begin() + (result.size() - X), result.end());
 			}
 			else if (tokens[0][0] == 'r' && tokens[1][0] == 'b')
@@ -1375,15 +1374,15 @@ namespace day21
 			}
 			else if (tokens[0][0] == 'r' && tokens[1][0] == 'p')
 			{
-				auto X = toInteger<uint32_t>(tokens[2]);
-				auto Y = toInteger<uint32_t>(tokens[4]);
+				const auto X = toInteger<uint32_t>(tokens[2]);
+				const auto Y = toInteger<uint32_t>(tokens[4]);
 				std::reverse(result.begin() + X, result.begin() + Y + 1);
 			}
 			else if (tokens[0][0] == 'm' && tokens[1][0] == 'p')
 			{
-				auto X = toInteger<uint32_t>(tokens[2]);
-				auto Y = toInteger<uint32_t>(tokens[5]);
-				auto temp = result[X];
+				const auto X = toInteger<uint32_t>(tokens[2]);
+				const auto Y = toInteger<uint32_t>(tokens[5]);
+				const auto temp = result[X];
 
 				result.erase(X, 1);
 				result.insert(result.begin() + Y, temp);
@@ -1416,24 +1415,24 @@ namespace day21
 
 			if (tokens[0][0] == 's' && tokens[1][0] == 'p')
 			{
-				auto X = toInteger<uint32_t>(tokens[2]);
-				auto Y = toInteger<uint32_t>(tokens[5]);
+				const auto X = toInteger<uint32_t>(tokens[2]);
+				const auto Y = toInteger<uint32_t>(tokens[5]);
 				std::swap(result[Y], result[X]);
 			}
 			else if (tokens[0][0] == 's' && tokens[1][0] == 'l')
 			{
-				auto X = result.find(tokens[2][0]);
-				auto Y = result.find(tokens[5][0]);
+				const auto X = result.find(tokens[2][0]);
+				const auto Y = result.find(tokens[5][0]);
 				std::swap(result[Y], result[X]);
 			}
 			else if (tokens[0][0] == 'r' && tokens[1][0] == 'l')
 			{
-				auto X = toInteger<uint32_t>(tokens[2]) % result.size();
+				const auto X = toInteger<uint32_t>(tokens[2]) % result.size();
 				std::rotate(result.begin(), result.begin() + (result.size() - X), result.end());
 			}
 			else if (tokens[0][0] == 'r' && tokens[1][0] == 'r')
 			{
-				auto X = toInteger<uint32_t>(tokens[2]) % result.size();
+				const auto X = toInteger<uint32_t>(tokens[2]) % result.size();
 				std::rotate(result.begin(), result.begin() + X, result.end());
 			}
 			else if (tokens[0][0] == 'r' && tokens[1][0] == 'b')
@@ -1445,15 +1444,15 @@ namespace day21
 			}
 			else if (tokens[0][0] == 'r' && tokens[1][0] == 'p')
 			{
-				auto X = toInteger<uint32_t>(tokens[2]);
-				auto Y = toInteger<uint32_t>(tokens[4]);
+				const auto X = toInteger<uint32_t>(tokens[2]);
+				const auto Y = toInteger<uint32_t>(tokens[4]);
 				std::reverse(result.begin() + X, result.begin() + Y + 1);
 			}
 			else if (tokens[0][0] == 'm' && tokens[1][0] == 'p')
 			{
-				auto X = toInteger<uint32_t>(tokens[2]);
-				auto Y = toInteger<uint32_t>(tokens[5]);
-				auto temp = result[Y];
+				const auto X = toInteger<uint32_t>(tokens[2]);
+				const auto Y = toInteger<uint32_t>(tokens[5]);
+				const auto temp = result[Y];
 
 				result.erase(Y, 1);
 				result.insert(result.begin() + X, temp);
@@ -1466,14 +1465,14 @@ namespace day21
 
 		std::cout << result << std::endl;
 	}
-}
+}  // namespace day21
 
 namespace day22
 {
 	class Node
 	{
 	public:
-		Node(uint32_t x, uint32_t y, uint32_t size, uint32_t used, uint32_t avail, uint32_t use) :
+		Node(const uint32_t x, const uint32_t y, const uint32_t size, const uint32_t used, const uint32_t avail, const uint32_t use) :
 			m_x(x), m_y(y), m_size(size), m_used(used), m_avail(avail), m_use(use)
 		{}
 
@@ -1486,7 +1485,7 @@ namespace day22
 		uint32_t m_use;
 	};
 
-	uint32_t BFS(std::pair<uint32_t, uint32_t> start, std::pair<uint32_t, uint32_t> end, uint32_t maxX, uint32_t maxY, std::function<bool(std::pair<uint32_t, uint32_t>&)> isWall)
+	uint32_t BFS(const std::pair<uint32_t, uint32_t> start, const std::pair<uint32_t, uint32_t> end, const uint32_t maxX, const uint32_t maxY, const std::function<bool(std::pair<uint32_t, uint32_t>&)>& isWall)
 	{
 		std::map<std::pair<uint32_t, uint32_t>, uint32_t> distances;
 		std::queue<std::pair<uint32_t, uint32_t>> toGo;
@@ -1508,7 +1507,7 @@ namespace day22
 
 			for (auto& neighbor : neighbors)
 			{
-				if (neighbor.first < 0 || neighbor.second < 0 || neighbor.first > maxX || neighbor.second > maxY || distances.find(neighbor) != distances.end())
+				if (neighbor.first > maxX || neighbor.second > maxY || distances.find(neighbor) != distances.end())
 				{
 					continue;
 				}
@@ -1532,7 +1531,7 @@ namespace day22
 		return 0;
 	}
 
-	void part1(bool doPart2 = false)
+	void part1(const bool doPart2 = false)
 	{
 		std::vector<Node> nodes;
 		std::map<std::pair<uint32_t, uint32_t>, uint32_t> nodesMap;
@@ -1595,9 +1594,9 @@ namespace day22
 
 		if (doPart2)
 		{
-			auto isWall = [&nodes, &nodesMap, &minimum](std::pair<uint32_t, uint32_t> coord) { return nodes[nodesMap[coord]].m_used > minimum; };
-			auto distanceToGoal = BFS({ emptyX, emptyY }, { maxX - 1, 0 }, maxX, maxY, isWall);
-			auto distanceTo00 = BFS({ maxX - 1, 0 }, { 0, 0 }, maxX, maxY, isWall);
+			const auto isWall = [&nodes, &nodesMap, &minimum](std::pair<uint32_t, uint32_t> coord) { return nodes[nodesMap[coord]].m_used > minimum; };
+			const auto distanceToGoal = BFS({ emptyX, emptyY }, { maxX - 1, 0 }, maxX, maxY, isWall);
+			const auto distanceTo00 = BFS({ maxX - 1, 0 }, { 0, 0 }, maxX, maxY, isWall);
 			std::cout << distanceTo00 * 5 + 1 + distanceToGoal << std::endl;
 		}
 		else
@@ -1626,17 +1625,17 @@ namespace day22
 	{
 		part1(true);
 	}
-}
+}  // namespace day22
 
 namespace day23
 {
-	void part1(bool doPart2 = false)
+	void part1(const bool doPart2 = false)
 	{
 		std::vector<std::vector<std::string>> codeLines;
 		for (const auto& line : getLineByLine("day23.txt"))
 		{
 			std::istringstream iss(line);
-			std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{} };
+			const std::vector<std::string> tokens{ std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{} };
 			codeLines.push_back(tokens);
 		}
 
@@ -1657,7 +1656,7 @@ namespace day23
 				}
 				else if (codeLines[index][2][0] >= 'a' && codeLines[index][2][0] <= 'd')
 				{
-					auto number = toInteger(codeLines[index][1]);
+					const auto number = toInteger(codeLines[index][1]);
 					result[codeLines[index][2][0] - 'a'] = number;
 				}
 			}
@@ -1717,8 +1716,8 @@ namespace day23
 					number = toInteger(codeLines[index][1]);
 				}
 
-				auto newIndex = index + number;
-				if (newIndex >= 0 && newIndex < codeLines.size())
+				const auto newIndex = index + number;
+				if (newIndex < codeLines.size())
 				{
 					if (codeLines[newIndex].size() == 2)
 					{
@@ -1740,7 +1739,7 @@ namespace day23
 	{
 		part1(true);
 	}
-}
+}  // namespace day23
 
 int main(int argc, char** argv)
 {
