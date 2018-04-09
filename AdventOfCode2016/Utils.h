@@ -1,14 +1,25 @@
 #pragma once
 
 #include <string>
-#include <sstream>
+
+#define EXCEPTION(what) utils::AoCException(what, __FILE__, __LINE__)
 
 
-template<typename T = int64_t, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
-auto toInteger(std::string number)
+namespace utils
 {
-	T result;
-	std::istringstream numberStream(number);
-	numberStream >> result;
-	return result;
+	class AoCException : public std::exception
+	{
+	public:
+		AoCException(const std::string& what, const std::string& file, const int line) : m_what("!!! EXCEPTION !!!\nFile: " + file + "\nLine: " + std::to_string(line) + "\nError: " + what)
+		{
+		}
+
+		const char* what() const override
+		{
+			return m_what.c_str();
+		}
+
+	private:
+		std::string m_what;
+	};
 }

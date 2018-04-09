@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Utils.h"
+
 #include <experimental/generator>
 
 #include <fstream>
@@ -11,6 +13,12 @@ template <typename T = std::string>
 auto getLine(std::string filename, std::function<T(std::string&)> func = [](std::string& var) { return var; })
 {
 	std::ifstream infile(filename);
+
+	if (!infile.good())
+	{
+		throw EXCEPTION("Reading file " + filename);
+	}
+
 	std::string line;
 
 	getline(infile, line);
@@ -21,6 +29,12 @@ template <typename T = std::string>
 auto getLineByLine(std::string filename, std::function<T(std::string&)> func = [](std::string& var) { return var; })
 {
 	std::ifstream infile(filename);
+
+	if (!infile.good())
+	{
+		throw EXCEPTION("Reading file " + filename);
+	}
+
 	std::string line;
 
 	while (getline(infile, line))
