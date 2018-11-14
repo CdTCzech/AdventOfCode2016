@@ -16,7 +16,7 @@ auto getLine(std::string filename, std::function<T(std::string&)> func = [](std:
 
 	if (!infile.good())
 	{
-		throw EXCEPTION("Reading file " + filename);
+		throw utils::AoCException("Reading file " + filename, __FILE__, __LINE__);
 	}
 
 	std::string line;
@@ -32,7 +32,8 @@ auto getLineByLine(std::string filename, std::function<T(std::string&)> func = [
 
 	if (!infile.good())
 	{
-		throw EXCEPTION("Reading file " + filename);
+		auto ICE = "Reading file " + filename;
+		throw utils::AoCException(ICE, __FILE__, __LINE__);
 	}
 
 	std::string line;
