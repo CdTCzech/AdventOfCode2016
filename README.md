@@ -1,7 +1,7 @@
 # Advent of Code 2016
-My solutions of Advent of Code 2016 in modern C++.
+My solutions of Advent of Code 2016 in C++.
 
-Currently tested in Visual Studio 2017 Update 9.
+Tested in Visual Studio 2019 Preview 1.
 
 ### Third party libraries I'm using:
 MD5 library from http://www.zedwood.com/article/cpp-md5-function .
